@@ -1,18 +1,18 @@
+package cs475;
+
 /**
  * @author: Li-Yi Lin
  */
-package cs475;
-
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class FeatureVector implements Serializable {
+public class FeatureVector {
 
 	// Feature vector.
 	private Map<Integer, Double> featureVector;
-	
+
+
 	/**
 	 * Construct a feature vector.
 	 */
@@ -24,7 +24,7 @@ public class FeatureVector implements Serializable {
 		// TODO Auto-generated method stub
 		this.featureVector.put(index, value);
 	}
-
+	
 	public double get(int index) {
 		// TODO Auto-generated method stub
 		return this.featureVector.get(index);
@@ -43,5 +43,4 @@ public class FeatureVector implements Serializable {
 		Iterator it = featureVector.entrySet().iterator();
 		return it;
 	}
-
 }
