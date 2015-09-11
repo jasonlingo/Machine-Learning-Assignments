@@ -72,7 +72,8 @@ public class Classify {
 				majorityPred.train(instances);
 				break;
 			case "even_odd":
-
+				Predictor evenOddPred = new EvenOdd();
+				evenOddPred.train(instances);
 				break;
 			default:
 				System.out.println("Please check your algorithm name.");

@@ -27,29 +27,28 @@ public class Majority extends Predictor{
      */
     @Override
     public void train(List<Instance> instances){
-        int totZero = 0;
-        int totOne = 0;
+        int totZeroes = 0;
+        int totOnes = 0;
         for (Instance inst: instances){
             if (inst.getLabel().toString().equals("1")){
-                totOne += 1;
-            } else if(inst.getLabel().toString().equals("1")){
-                totZero += 1;
+                totOnes += 1;
+            } else if(inst.getLabel().toString().equals("0")){
+                totZeroes += 1;
             } else {
                 System.out.println("Found a wrong label during training.");
             }
         }
-        this._majority = totOne >= totZero? 1:0;
+        this._majority = totOnes >= totZeroes? 1:0;
     }
 
     @Override
     public Label predict(Instance instance){
         // Check _majority != -1 to make sure the predictor is trained.
-        if (this._majority != -1){
-            return new ClassificationLabel(this._majority);
-        } else {
-            System.out.println("This predictor is not trained yet.");
+        if (this._majority == -1){
+            System.out.println("This majority predictor is not trained yet.");
             return null;
         }
+        return new ClassificationLabel(this._majority);
     }
 
 }
