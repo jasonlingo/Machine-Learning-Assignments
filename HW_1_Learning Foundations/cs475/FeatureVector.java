@@ -10,29 +10,29 @@ import java.util.Map;
 public class FeatureVector {
 
 	// Feature vector.
-	private Map<Integer, Double> featureVector;
+	private Map<Integer, Double> _featureVector;
 
 
 	/**
 	 * Construct a feature vector.
 	 */
 	public FeatureVector(){
-		this.featureVector = new HashMap<>();
+		this._featureVector = new HashMap<>();
 	}
 
 	public void add(int index, double value) {
 		// TODO Auto-generated method stub
-		this.featureVector.put(index, value);
+		this._featureVector.put(index, value);
 	}
 	
 	public double get(int index) {
 		// TODO Auto-generated method stub
-		return this.featureVector.get(index);
+		return this._featureVector.get(index);
 	}
 
 	public int size() {
 		// TODO Auto-generated method stub
-		return this.featureVector.size();
+		return this._featureVector.size();
 	}
 
 	/**
@@ -40,7 +40,7 @@ public class FeatureVector {
 	 * @return
 	 */
 	public Iterator iterator(){
-		Iterator it = featureVector.entrySet().iterator();
+		Iterator it = _featureVector.entrySet().iterator();
 		return it;
 	}
 }

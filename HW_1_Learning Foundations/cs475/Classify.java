@@ -66,6 +66,18 @@ public class Classify {
 	private static Predictor train(List<Instance> instances, String algorithm) {
 		// TODO Train the model using "algorithm" on "data"
 		// TODO Evaluate the model
+		switch (algorithm){
+			case "majority":
+				Predictor majorityPred = new Majority();
+				majorityPred.train(instances);
+				break;
+			case "even_odd":
+
+				break;
+			default:
+				System.out.println("Please check your algorithm name.");
+				break;
+		}
 		return null;
 	}
 
