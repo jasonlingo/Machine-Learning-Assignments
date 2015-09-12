@@ -31,9 +31,9 @@ public class Majority extends Predictor{
         int totOnes = 0;
         for (Instance inst: instances){
             if (inst.getLabel().toString().equals("1")){
-                totOnes += 1;
+                totOnes++;
             } else if(inst.getLabel().toString().equals("0")){
-                totZeroes += 1;
+                totZeroes++;
             } else {
                 System.out.println("Found a wrong label during training.");
             }

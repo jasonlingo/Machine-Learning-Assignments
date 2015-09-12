@@ -66,20 +66,24 @@ public class Classify {
 	private static Predictor train(List<Instance> instances, String algorithm) {
 		// TODO Train the model using "algorithm" on "data"
 		// TODO Evaluate the model
+		Predictor predictor = null;
 		switch (algorithm){
 			case "majority":
-				Predictor majorityPred = new Majority();
-				majorityPred.train(instances);
+				predictor = new Majority();
 				break;
 			case "even_odd":
-				Predictor evenOddPred = new EvenOdd();
-				evenOddPred.train(instances);
+				predictor = new EvenOdd();
 				break;
 			default:
-				System.out.println("Please check your algorithm name.");
+				System.out.println("Please check the algorithm's name.");
 				break;
 		}
-		return null;
+		predictor.train(instances);
+		AccuracyEvaluator acuEva = new AccuracyEvaluator();
+		double accuracy = acuEva.evaluate(instances, predictor);
+		System.out.printf("Accuracy of training is %f\n", accuracy);
+
+		return predictor;
 	}
 
 	private static void evaluateAndSavePredictions(Predictor predictor,

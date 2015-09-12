@@ -1,0 +1,56 @@
+--- Accuracy ---
+speech
+majority
+    train: 0.5075
+    dev: 0.51
+even_odd
+    train: 0.4925
+    dev: 0.49
+
+bio
+majority
+    train: 0.681
+    dev: 0.725
+even_odd
+    train: 0.681
+    dev: 0.725
+
+finance
+majority    
+    train: 0.530909
+    dev: 0.6 (18/30)
+even_odd
+    train: 0.530909
+    dev: 0.6 (18/30)
+
+vision
+majority
+    train: 0.5
+    dev: 0.537500 (43/80)
+even_odd
+    train: 0.5
+    dev: 0.4625 (37/80)
+
+nlp
+majority
+    train: 0.52
+    dev: 0.523333 (157/300)
+even_odd
+    train: 0.52
+    dev: 0.523333 (157/300)
+
+synthetic easy
+majority
+    train: 0.517778
+    dev: 0.5 (50/100) 
+even_odd
+    train: 0.482222
+    dev: 0.5 (50/100)
+
+synthetic hard
+majority
+    train: 0.503333
+    dev: 0.53 (53/100)
+even_odd
+    train: 0.496667
+    dev: 0.47 (47/100)

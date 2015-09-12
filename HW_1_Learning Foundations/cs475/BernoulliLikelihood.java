@@ -4,8 +4,10 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 
 import org.apache.commons.cli.Option;
@@ -47,13 +49,54 @@ public class BernoulliLikelihood {
 	
 	public double computeMaximumLikelihood(ArrayList<Integer> data) {
 		// TODO: Fill in here
-		return 0.0;
-		
+		List<Integer> count = countOnes(data);
+		if (data.size() - count.get(1) <= 0){
+			System.out.printf("Divisor is %d. Please check the input data.\n", (data.size() - count.get(1)));
+			return 0.0;
+		}
+		return (double)count.get(0) / (double)(data.size() - count.get(1));
 	}
 	
 	public double computeLogLikelihood(ArrayList<Integer> data, double parameter) {
 		// TODO: Fill in here
-		return 0.0;
+		// log(0) is undefined.
+		if (parameter == 0.0 || parameter == 1.0){
+			System.out.printf("The parameter of computerLogLikelihood is %f. Log(0) is not defined.\n.", parameter);
+			return 0.0;
+		}
+
+		List<Integer> count = countOnes(data);
+		if (data.size() - count.get(1) <= 0){
+			System.out.println("All input are illegal. Please check the input data.");
+			return 0.0;
+		}
+
+		return count.get(0) * Math.log(parameter) +
+				(data.size() - count.get(1) - count.get(0)) * Math.log(1.0 - parameter);
+	}
+
+	/**
+	 * Count the number of ones happens in the data set and also the number of
+	 * illegal input (neither 1 nor 0).
+	 * @param data
+	 * @return a list of counts.
+	 */
+	public List<Integer> countOnes(ArrayList<Integer> data){
+		ArrayList<Integer> count = new ArrayList<>();
+		int totOnes = 0;
+		int discard = 0;
+		for (int d: data){
+			if (d == 1){
+				totOnes++;
+			} else if (d != 0){
+				System.out.println("data is not 0 and 1.");
+				discard++;
+			}
+		}
+		count.add(totOnes);
+		count.add(discard);
+
+		return count;
 	}
 	
 	public ArrayList<Integer> readData(String filename) throws FileNotFoundException {
