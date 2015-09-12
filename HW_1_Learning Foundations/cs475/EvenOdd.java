@@ -40,7 +40,20 @@ public class EvenOdd extends Predictor{
             System.out.println("The even-odd predictor is not trained yet.");
             return null;
         }
-        return new ClassificationLabel(this._predict);
+
+        double evenSum = 0.0;
+        double oddSum = 0.0;
+
+        Iterator it = instance.getFeatureVector().iterator();
+        while (it.hasNext()){
+            Map.Entry pair = (Map.Entry)it.next();
+            if ((int)pair.getKey() % 2 == 0){
+                evenSum += (double)pair.getValue();
+            } else {
+                oddSum += (double)pair.getValue();
+            }
+        }
+        return new ClassificationLabel(evenSum >= oddSum? 1:0);
     }
 
 }
