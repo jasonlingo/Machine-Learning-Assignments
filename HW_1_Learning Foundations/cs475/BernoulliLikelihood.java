@@ -93,8 +93,9 @@ public class BernoulliLikelihood {
 				discard++;
 			}
 		}
-		count.add(totOnes);
-		count.add(discard);
+		count.add(totOnes); //count[0] stores the total number of ones
+		count.add(discard); //count[1] stores the total number of discarded data (instance)
+		                    //illegal labelling (not in set {0,1}).
 
 		return count;
 	}
