@@ -66,7 +66,7 @@ public class Classify {
 	private static Predictor train(List<Instance> instances, String algorithm) {
 		// TODO Train the model using "algorithm" on "data"
 		// TODO Evaluate the model
-		Predictor predictor = null;
+		Predictor predictor;
 		switch (algorithm){
 			case "majority":
 				predictor = new Majority();
@@ -76,9 +76,11 @@ public class Classify {
 				break;
 			default:
 				System.out.println("Please check the algorithm's name.");
-				break;
+				return null;
 		}
 		predictor.train(instances);
+
+		// Evaluate the trained model.
 		AccuracyEvaluator acuEva = new AccuracyEvaluator();
 		double accuracy = acuEva.evaluate(instances, predictor);
 		System.out.printf("Accuracy of training is %f\n", accuracy);
@@ -90,11 +92,31 @@ public class Classify {
 			List<Instance> instances, String predictions_file) throws IOException {
 		PredictionsWriter writer = new PredictionsWriter(predictions_file);
 		// TODO Evaluate the model if labels are available. 
-		
+
+		// If the data is too much, may consider the marked method below that performs
+		// prediction and evaluation at the same time.
+		//int correct = 0;   // the number of correct predictions
+		//int totalInst = 0; // the number of instances that already have labels.
 		for (Instance instance : instances) {
 			Label label = predictor.predict(instance);
 			writer.writePrediction(label);
+		//	if (instance.getLabel() != null){
+		//		totalInst++;
+		//		if (instance.getLabel().toString().equals(label.toString())){
+		//			correct++;
+		//		}
+		//	}
 		}
+
+//		if (totalInst > 0){
+//			System.out.printf("The accuracy of testing is %f (%d / %d)\n", (double) correct / (double) totalInst,
+//					correct, totalInst);
+//		}
+
+		// Evaluate the testing result.
+		AccuracyEvaluator acuEva = new AccuracyEvaluator();
+		double accuracy = acuEva.evaluate(instances, predictor);
+		System.out.printf("Accuracy of testing is %f\n", accuracy);
 		
 		writer.close();
 		

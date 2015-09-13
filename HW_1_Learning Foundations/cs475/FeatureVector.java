@@ -12,7 +12,6 @@ public class FeatureVector {
 	// Feature vector.
 	private Map<Integer, Double> _featureVector;
 
-
 	/**
 	 * Construct a feature vector.
 	 */
@@ -40,7 +39,6 @@ public class FeatureVector {
 	 * @return
 	 */
 	public Iterator iterator(){
-		Iterator it = _featureVector.entrySet().iterator();
-		return it;
+		return _featureVector.entrySet().iterator();
 	}
 }

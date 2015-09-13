@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class ClassificationLabel extends Label implements Serializable {
 
-	public int _label;
+	private int _label;
 
 	public ClassificationLabel(int label) {
 		// TODO Auto-generated constructor stub

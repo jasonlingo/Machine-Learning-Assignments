@@ -1,18 +1,23 @@
 --- majority
-java cs475/Classify -mode train -algorithm majority -model_file finance.majority.model -data DATA/finance.train
+java cs475/Classify -mode train -algorithm majority -model_file hard.majority.model -data DATA/hard.train
 
-java cs475/Classify -mode test -model_file finance.majority.model -data DATA/finance.dev -predictions_file finance.dev.majority.predictions
+java cs475/Classify -mode test -model_file hard.majority.model -data DATA/hard.dev -predictions_file hard.dev.majority.predictions
 
-python DATA/compute_accuracy.py DATA/finance.dev finance.dev.majority.predictions
+python DATA/compute_accuracy.py DATA/hard.dev hard.dev.majority.predictions
 
 --- even_odd
-java cs475/Classify -mode train -algorithm even_odd -model_file finance.even_odd.model -data DATA/finance.train
+java cs475/Classify -mode train -algorithm even_odd -model_file hard.even_odd.model -data DATA/hard.train
 
-java cs475/Classify -mode test -model_file finance.even_odd.model -data DATA/finance.dev -predictions_file finance.dev.even_odd.predictions
+java cs475/Classify -mode test -model_file hard.even_odd.model -data DATA/hard.dev -predictions_file hard.dev.even_odd.predictions
 
-python DATA/compute_accuracy.py DATA/finance.dev finance.dev.even_odd.predictions
+python DATA/compute_accuracy.py DATA/hard.dev hard.dev.even_odd.predictions
 
 
+
+--- Bernoulli 
+java cs475/BernoulliLikelihood -data DATA/coin_flip_1
+java cs475/BernoulliLikelihood -data DATA/coin_flip_2
+java cs475/BernoulliLikelihood -data DATA/coin_flip_3
 
 
 

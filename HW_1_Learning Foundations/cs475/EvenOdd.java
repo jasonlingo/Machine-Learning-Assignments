@@ -9,38 +9,32 @@ import java.util.Map;
  */
 public class EvenOdd extends Predictor{
 
-    private int _predict;
-
     public EvenOdd(){
-        this._predict = -1;
     }
 
     @Override
     public void train(List<Instance> instances){
-        double evenSum = 0.0;
-        double oddSum = 0.0;
+        // The training data has nothing to do with the prediction.
+        // So this training function will do nothing.
 
-        for (Instance inst: instances){
-            Iterator it = inst.getFeatureVector().iterator();
-            while (it.hasNext()){
-                Map.Entry pair = (Map.Entry)it.next();
-                if ((int)pair.getKey() % 2 == 0){
-                    evenSum += (double)pair.getValue();
-                } else {
-                    oddSum += (double)pair.getValue();
-                }
-            }
-        }
-        this._predict = evenSum >= oddSum? 1:0;
+//        double evenSum = 0.0;
+//        double oddSum = 0.0;
+//
+//        for (Instance inst: instances){
+//            Iterator it = inst.getFeatureVector().iterator();
+//            while (it.hasNext()){
+//                Map.Entry pair = (Map.Entry)it.next();
+//                if ((int)pair.getKey() % 2 == 0){
+//                    evenSum += (double)pair.getValue();
+//                } else {
+//                    oddSum += (double)pair.getValue();
+//                }
+//            }
+//        }
     }
 
     @Override
     public Label predict(Instance instance){
-        if (this._predict == -1){
-            System.out.println("The even-odd predictor is not trained yet.");
-            return null;
-        }
-
         double evenSum = 0.0;
         double oddSum = 0.0;
 

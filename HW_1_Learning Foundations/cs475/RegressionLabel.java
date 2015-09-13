@@ -4,8 +4,7 @@ import java.io.Serializable;
 
 public class RegressionLabel extends Label implements Serializable {
 
-
-	public double _label;
+	private double _label;
 
 	public RegressionLabel(double label) {
 		// TODO Auto-generated constructor stub
