@@ -80,8 +80,17 @@
 \noindent
 \textbf{Ans:} 
 Since we want to know the expected number of flips that there is exactly one tail happen in those flips, the tail must happen in the last flip and we stop tossing the coin. So we can calculate the expected number by 
-$$\sum_{x = 1}^{\infty} x \times (5/6)^{x-1} \times 1/6 = 6$$
+$$E(x) = \sum_{x = 1}^{\infty} \{x \times (5/6)^{x-1} \times 1/6\}$$
 $x$ is the number of flips.
+To solve this summation, we transform it to the new form shown below
+$$\sum_{x=0}^{\infty} \{(x + 1) \times (5/6)^{x} \times 1/6\} $$
+$$= 1/6 \times \{\sum_{x=0}^{\infty} x \times (5/6)^{x} + \sum_{x=0}^{\infty} (5/6)^{x}\}$$
+$$= 1/6 \times \{\sum_{x=0}^{\infty} x \times (5/6)^{x} + 6\}$$
+$$= \sum_{x = 0}^{\infty} \{x \times (5/6)^{x} \times 1/6\} + 1$$
+$$= 5/6 \times \sum_{x = 1}^{\infty} \{x \times (5/6)^{x-1}\} + 1$$
+Then we got
+$$E(x) = 5/6 \times E(x) + 1$$
+$$E(x) = 6$$
 So the expected number of flips that the coin comes up tails exactly once is 6.
 
 
@@ -89,7 +98,13 @@ So the expected number of flips that the coin comes up tails exactly once is 6.
 
 \noindent
 \textbf{Ans:}
-Based one the given problem description, we can only assume that the only factor that determines the probability of a baby being girl or boy is the Y-chromosome comes from the baby's father (since women only have X-chromosome). If a Y-chromosome from a man combines with a X-chromosome from a woman, then the baby will be a boy. On the other hand, if a X-chromosome form a man combines with a X-chromosome from a woman, then the baby will be a girl. Then, we further assume that the probabilities of X-chromosome or Y-chromosome comes from a man are both 1/2 and are independent and identically distributed. Therefore, the probability of the other child is also a girl is still 1/2 (i.e. 50\%).
+%Based one the given problem description, we can only assume that the only factor that determines the probability of a baby being girl or boy is the Y-chromosome comes from the baby's father (since women only have X-chromosome). If a Y-chromosome from a man combines with a X-chromosome from a woman, then the baby will be a boy. On the other hand, if a X-chromosome form a man combines with a X-chromosome from a woman, then the baby will be a girl. Then, we further assume that the probabilities of X-chromosome or Y-chromosome comes from a man are both 1/2 and are independent and identically distributed. Therefore, the probability of the other child is also a girl is still 1/2 (i.e. 50\%).\\%
+Assume the probabilities of a child being girl or boy are both 1/2 and the probability are independent and identically distributed. Use $G$ denotes a girl and $B$ denotes a boy. So the probability that the other child is also a girl (event A) given that we know one child is a girl (event B) can be calculated as following:
+$$P(A | B) = \frac{P(A \cap B)}{B}$$
+Since the probability of event A and B are independent, the above equation becomes 
+$$P(A | B) = \frac{P(A \cap B)}{B} = \frac{P(A) \times P(B)}{P(B)} = P(A) = 1/2$$
+Therefore, the probability that the other child is also a girl given one child is a girl is 1/2.
+
 
 
 \paragraph{3 (4 points)} Please show that the following loss functions are convex: (a) $\ell (y, \hat{y}) = |y-\hat{y}|$; (b) $\ell (y, \hat{y}) = (y-\hat{y})^2$.

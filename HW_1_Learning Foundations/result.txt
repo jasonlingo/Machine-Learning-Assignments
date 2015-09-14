@@ -53,7 +53,7 @@ majority
     dev: 0.53 (53/100)
 even_odd
     train: 0.547778
-    dev: 0.41 (41/100)
+    dev: 0.41 (4/100)
 
 
 Bernoulli Maximum Likelihood:
