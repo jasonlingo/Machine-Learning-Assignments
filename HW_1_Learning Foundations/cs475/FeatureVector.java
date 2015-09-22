@@ -6,8 +6,9 @@ package cs475;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.io.Serializable;
 
-public class FeatureVector {
+public class FeatureVector implements Serializable{
 
 	// Feature vector.
 	private Map<Integer, Double> _featureVector;
