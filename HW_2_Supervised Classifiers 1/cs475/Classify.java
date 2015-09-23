@@ -113,7 +113,7 @@ public class Classify {
 		// Evaluate the trained model.
 		AccuracyEvaluator acuEva = new AccuracyEvaluator();
 		double accuracy = acuEva.evaluate(instances, predictor);
-		System.out.printf("Accuracy of training is %f\n", accuracy);
+		//System.out.printf("Accuracy of training is %f\n", accuracy);
 
 		return predictor;
 	}
@@ -133,7 +133,7 @@ public class Classify {
 		// Evaluate the testing result.
 		AccuracyEvaluator acuEva = new AccuracyEvaluator();
 		double accuracy = acuEva.evaluate(instances, predictor);
-		System.out.printf("Accuracy of testing is %f\n", accuracy);
+		//System.out.printf("Accuracy of testing is %f\n", accuracy);
 		
 		writer.close();
 		

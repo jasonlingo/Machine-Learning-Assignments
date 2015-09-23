@@ -25,8 +25,8 @@ public class AccuracyEvaluator extends Evaluator{
                 }
             }
         }
-        //System.out.printf("The accuracy is %f (%d / %d)\n", (double)correct / (double)totalInst,
-        //                                                    correct, totalInst);
+        System.out.printf("The accuracy is %f (%d / %d)\n", (double)correct / (double)totalInst,
+                                                            correct, totalInst);
         return (double)correct / (double)totalInst;
     }
 }

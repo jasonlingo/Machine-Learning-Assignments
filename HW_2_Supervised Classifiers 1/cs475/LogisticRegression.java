@@ -79,24 +79,28 @@ public class LogisticRegression extends Predictor {
                 Iterator it = fv.iterator();
                 while (it.hasNext()){
                     Map.Entry pair = (Map.Entry)it.next();
-                    if (!this.parameters.containsKey(pair.getKey())){
-                        //System.out.printf("insert key: %d\n", (int) pair.getKey());
-                        // Initialize parameter to zero
-                        this.parameters.put((int)pair.getKey(), 0.0);
-                        featureNum++;
+                    if ((int)pair.getKey() > featureNum){
+                        featureNum = (int)pair.getKey();
                     }
+//                    if (!this.parameters.containsKey(pair.getKey())){
+//                        //System.out.printf("insert key: %d\n", (int) pair.getKey());
+//                        // Initialize parameter to zero
+//                        this.parameters.put((int)pair.getKey(), 0.0);
+//                        featureNum++;
+//                    }
                 }
             }
         }
         // Initialize etas and Fij
         this.etas = new HashMap<>();
         for (int ii = 1; ii <= featureNum; ii++){
+            this.parameters.put(ii, 0.0);
             this.etas.put(ii, etaZero);
             this.Fij.put(ii, 0.0);
         }
         System.out.printf("Total features: %d\n", featureNum);
 
-//        Iterator it = this.etas.entrySet().iterator();
+//        Iterator it = this.parameters.entrySet().iterator();
 //        System.out.println("Initial eta:");
 //        while (it.hasNext()){
 //            Map.Entry pair = (Map.Entry)it.next();
@@ -113,9 +117,10 @@ public class LogisticRegression extends Predictor {
         int sgdModeNum = instances.size();
 
         // Training iterations
+        System.out.print("Iteration: ");
         for (int iter = 0; iter < this.iteration; iter++){
         //for (int iter = 0; iter < 1; iter++){
-            System.out.printf("Iter: %2d\n", iter + 1);
+            System.out.printf("%2d  ", iter + 1);
 
             for (int index = 0; index < this.featureVectors.size(); index++) {
                 // Get the information (feature vector and label) about this instance.
@@ -125,11 +130,22 @@ public class LogisticRegression extends Predictor {
 
                 // Get the value of (parameters * feature vector).
                 double wx = hypothesis(fv);
+                //System.out.printf("%f\n", wx);
+
 
                 // Stochastic Gradient descent
                 updateParameter(fv, wx, yLabel, index);
             }
         }
+        System.out.println();
+
+//        Iterator it = this.parameters.entrySet().iterator();
+//        System.out.println("Final parameters:");
+//        while (it.hasNext()){
+//            Map.Entry pair = (Map.Entry)it.next();
+//            System.out.printf("Key: %5d Value: %f\n", pair.getKey(), pair.getValue());
+//        }
+
     }
 
 
@@ -142,6 +158,7 @@ public class LogisticRegression extends Predictor {
     public Label predict(Instance instance) {
         FeatureVector fv = instance.getFeatureVector();
         double hp = hypothesis(fv);
+        //System.out.printf("Org: %s Pred: %f\n", instance.getLabel().toString(), hp);
         return new ClassificationLabel(sigmoid(hp) >= 0.5? 1:0);
     }
 
@@ -186,7 +203,9 @@ public class LogisticRegression extends Predictor {
         Iterator it = fv.iterator();
         while (it.hasNext()){
             Map.Entry pair = (Map.Entry)it.next();
-            wx += this.parameters.get(pair.getKey()) * (double)pair.getValue();
+            if (this.parameters.containsKey(pair.getKey())){
+                wx += this.parameters.get(pair.getKey()) * (double)pair.getValue();
+            }
         }
         return wx;
     }
