@@ -1,0 +1,149 @@
+\documentclass[11pt]{article}
+
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{url}
+\usepackage{wrapfig}
+\usepackage{hyperref} 
+\usepackage{color}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amstext}
+\usepackage{enumerate}
+\usepackage{amsmath,bm}
+\oddsidemargin 0mm
+\evensidemargin 5mm
+\topmargin -20mm
+\textheight 240mm
+\textwidth 160mm
+
+
+
+
+\newcommand{\vw}{{\bf w}}
+\newcommand{\vx}{{\bf x}}
+\newcommand{\vy}{{\bf y}}
+\newcommand{\vxi}{{\bf x}_i}
+\newcommand{\yi}{y_i}
+\newcommand{\vxj}{{\bf x}_j}
+\newcommand{\vxn}{{\bf x}_n}
+\newcommand{\yj}{y_j}
+\newcommand{\ai}{\alpha_i}
+\newcommand{\aj}{\alpha_j}
+\newcommand{\X}{{\bf X}}
+\newcommand{\Y}{{\bf Y}}
+\newcommand{\vz}{{\bf z}}
+\newcommand{\msigma}{{\bf \Sigma}}
+\newcommand{\vmu}{{\bf \mu}}
+\newcommand{\vmuk}{{\bf \mu}_k}
+\newcommand{\msigmak}{{\bf \Sigma}_k}
+\newcommand{\vmuj}{{\bf \mu}_j}
+\newcommand{\msigmaj}{{\bf \Sigma}_j}
+\newcommand{\pij}{\pi_j}
+\newcommand{\pik}{\pi_k}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\el}{\mathcal{L}}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\vxij}{{\bf x}_{ij}}
+\newcommand{\vt}{{\bf t}}
+\newcommand{\yh}{\hat{y}}
+\newcommand{\code}[1]{{\footnotesize \tt #1}}
+\newcommand{\alphai}{\alpha_i}
+
+
+
+\pagestyle{myheadings} 
+\markboth{Homework 2}{Fall 2015 CS 475 Machine Learning: Homework 2} 
+
+
+\title{CS 475 Machine Learning: Homework 2\\Supervised Classifiers 1,\\
+Probability, Linear Algebra and Decision Trees\\
+\Large{Due: Tuesday September 29, 2015, 11:59pm}\\
+100 Points Total \hspace{1cm} Version 1.0}
+
+\author{}
+\date{}
+
+\begin{document}
+\large
+\maketitle
+\thispagestyle{headings}
+
+\vspace{-.5in}
+
+
+
+
+
+\section{Analytical (50 points)}
+
+\paragraph{1) Fisher Linear Discriminant and Logistic Regression Classifiers (15 points)}
+
+\begin{enumerate}[(a)]
+\item Prove that the class label $y$ conditioning on the feature vector $X$ follows a logistic regression model.\\
+\textbf{Ans:}\\
+We first use Bayes rule on $P(y|X)$:
+$$P(y | X) = \frac{P(X | y)P(y)}{P(X)}$$
+Since the two classes has equal prior, we have $P(y) = 1/2$ for each $y$.  In addition, $P(X)$ can be represented as $\sum_{y}P(X|y)P(y)$. So, the original equation can be changed as below:\\
+
+$$P(y|X) = \frac{P(X | y)P(y)}{\sum_{y}P(X|y)P(y)}$$
+%
+$$= \frac{\frac{1}{\sqrt{(2\pi)^k\Sigma}}\mathrm{e}^{-\frac{1}{2}(X-\mu_1)^T\Sigma^{-1}(X-\mu_1)} \times \frac{1}{2}}
+{\frac{1}{\sqrt{(2\pi)^k\Sigma}}\mathrm{e}^{-\frac{1}{2}(X-\mu_1)^T\Sigma^{-1}(X-\mu_1)}\times \frac{1}{2} + 
+ \frac{1}{\sqrt{(2\pi)^k\Sigma}}\mathrm{e}^{-\frac{1}{2}(X-\mu_2)^T\Sigma^{-1}(X-\mu_2)}\times \frac{1}{2}}$$
+%
+$$=\frac{\mathrm{e}^{-\frac{1}{2}(X-\mu_1)^T\Sigma^{-1}(X-\mu_1)}}
+{\mathrm{e}^{-\frac{1}{2}(X-\mu_1)^T\Sigma^{-1}(X-\mu_1)} + 
+\mathrm{e}^{-\frac{1}{2}(X-\mu_2)^T\Sigma^{-1}(X-\mu_2)}}$$
+%
+$$=\frac{1}{1+\mathrm{e}^{-\frac{1}{2}(X-\mu_2)^T\Sigma^{-1}(X-\mu_2) + \frac{1}{2}(X-\mu_1)^T\Sigma^{-1}(X-\mu_1)}}$$
+%
+$$=\frac{1}{1+\mathrm{e}^{ -\frac{1}{2}
+(X^T\Sigma^{-1}X 
+- X^T\Sigma^{-1}\mu_2 
+- \mu_2^T\Sigma^{-1}X 
++ \mu_2^T\Sigma^{-1}\mu_2 
+- X^T\Sigma^{-1}X
++X^T\Sigma^{-1}\mu_1
++\mu_1^T\Sigma^{-1}X
+- \mu_1^T\Sigma^{-1}\mu_1    )}}$$\\
+%
+Since $X^T\Sigma^{-1}\mu_1$ and $X^T\Sigma^{-1}\mu_2$ are numbers, we can transpose it. ($\Sigma$ is a symmetric matrix)\\
+$(X^T\Sigma^{-1}\mu_1)^T = \mu_1^T(\Sigma^{-1})^TX = \mu_1^T(\Sigma^T)^{-1}X = \mu_1^T\Sigma^{-1}X$\\
+$(X^T\Sigma^{-1}\mu_2)^T = \mu_2^T(\Sigma^{-1})^TX = \mu_2^T(\Sigma^T)^{-1}X = \mu_2^T\Sigma^{-1}X$\\
+%
+So the equation becomes:\\
+$$=\frac{1}{1+\mathrm{e}^{ -\frac{1}{2}(
+-2\mu_2^T\Sigma^{-1}X + 2\mu_1^T\Sigma^{-1}X
++ \mu_2^T\Sigma^{-1}\mu_2
+- \mu_1^T\Sigma^{-1}\mu_1
+ )}}$$\\
+ %
+ $$=\frac{1}{1+\mathrm{e}^{ 
+ -(\mu_1^T-\mu_2^T)\Sigma^{-1}X
+ - \frac{1}{2}( \mu_2^T\Sigma^{-1}\mu_2
+- \mu_1^T\Sigma^{-1}\mu_1)
+ }}$$\\
+The equation shown above is also the logistic regression form. Thus, we proved that the class label y conditioning on the feature vector X follows a logistic regression model.
+
+
+
+\item Prove that the classifier based on the logistic regression model obtained in (a) is equivalent the optimal Fisher linear discriminant classifier.  The optimal Fisher linear discriminant classifier is obtained using the population means and covariance matrix; see section 4.1.4 in Bishop.
+
+{\bf Hint:} You only need to show that both classifiers use the same decision rule.
+\end{enumerate}
+
+\paragraph{2) Linear Models (10 points)}
+
+
+\paragraph{3) Regularization and Overfitting. (5 points)}
+
+
+\paragraph{4) Decision Tree (10 points)} Let's investigate how accurately decisions trees can learn. We start 
+
+
+\paragraph{5) Conjugate Prior (10 points)}
+
+
+\end{document}
+

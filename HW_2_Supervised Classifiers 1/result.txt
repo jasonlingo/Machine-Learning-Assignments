@@ -1,0 +1,27 @@
+Bio
+Train: 0.990500
+Test: 0.985000
+
+nlp
+Train: 1.000000
+Test: 0.846667
+
+Speech
+Train: 0.965000
+Test: 0.880000
+
+Finance
+Train: 0.860000
+Test: 1.000000
+
+Vision
+Train: 0.994000
+Test: 1.000000
+
+Easy
+Train: 1.000000
+Test: 1.000000
+
+Hard
+Train: 0.611111
+Test: 0.460000

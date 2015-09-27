@@ -13,6 +13,10 @@ import java.util.Scanner;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 
+
+/**
+ * A class that calculates Bernoulli likelihood.
+ */
 public class BernoulliLikelihood {
 	static public LinkedList<Option> options = new LinkedList<Option>();
 	
@@ -46,7 +50,12 @@ public class BernoulliLikelihood {
 	private static void createCommandLineOptions() {
 		registerOption("data", "String", true, "The data file to read.");
 	}
-	
+
+	/**
+	 * Compute the maximum likelihood.
+	 * @param data
+	 * @return
+	 */
 	public double computeMaximumLikelihood(ArrayList<Integer> data) {
 		// TODO: Fill in here
 		List<Integer> count = countOnes(data);
@@ -56,10 +65,18 @@ public class BernoulliLikelihood {
 		}
 		return (double)count.get(0) / (double)(data.size() - count.get(1));
 	}
-	
+
+
+	/**
+	 * Compute the log likelihood.
+	 * @param data
+	 * @param parameter
+	 * @return
+	 */
 	public double computeLogLikelihood(ArrayList<Integer> data, double parameter) {
 		// TODO: Fill in here
 		// log(0) is undefined.
+		// parameter == 1 is also not allowed because the return value has log(1 - parameter)
 		if (parameter == 0.0 || parameter == 1.0){
 			System.out.printf("The parameter of computerLogLikelihood is %f. Log(0) is not defined.\n.", parameter);
 			return 0.0;

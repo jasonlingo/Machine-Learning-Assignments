@@ -36,9 +36,6 @@ public class LogisticRegression extends Predictor {
     private Map<Integer, Double> Fij;
 
 
-
-
-
     /**
      * Constructor
      * @param iteration
@@ -50,9 +47,16 @@ public class LogisticRegression extends Predictor {
         this.parameters = new HashMap<>();
         this.etas = new HashMap<>();
         this.Fij = new HashMap<>();
+        this.labels = new ArrayList<>();
+        this.featureVectors = new ArrayList<>();
     }
 
 
+    /**
+     * Train a logistic regression model using stochastic gradient descent and
+     * AdaGrad (adaptively choosing the learning rate) techniques.
+     * @param instances
+     */
     @Override
     public void train(List<Instance> instances){
         // ===================================================================
@@ -61,10 +65,9 @@ public class LogisticRegression extends Predictor {
         // parameters.
         // ===================================================================
         System.out.println("Start training------------------------------------");
-        this.parameters = new HashMap<>();
-        this.labels = new ArrayList<>();
-        this.featureVectors = new ArrayList<>();
-        int  featureNum = 0;
+        System.out.printf("eta0: %f\n", this.etaZero);
+
+        int featureNum = 0;
         for (Instance inst : instances){
             Label label = inst.getLabel();
             FeatureVector fv = inst.getFeatureVector();
@@ -82,31 +85,16 @@ public class LogisticRegression extends Predictor {
                     if ((int)pair.getKey() > featureNum){
                         featureNum = (int)pair.getKey();
                     }
-//                    if (!this.parameters.containsKey(pair.getKey())){
-//                        //System.out.printf("insert key: %d\n", (int) pair.getKey());
-//                        // Initialize parameter to zero
-//                        this.parameters.put((int)pair.getKey(), 0.0);
-//                        featureNum++;
-//                    }
                 }
             }
         }
-        // Initialize etas and Fij
-        this.etas = new HashMap<>();
+        // Initialize the value in etas', parameters, and Fij
         for (int ii = 1; ii <= featureNum; ii++){
             this.parameters.put(ii, 0.0);
             this.etas.put(ii, etaZero);
             this.Fij.put(ii, 0.0);
         }
         System.out.printf("Total features: %d\n", featureNum);
-
-//        Iterator it = this.parameters.entrySet().iterator();
-//        System.out.println("Initial eta:");
-//        while (it.hasNext()){
-//            Map.Entry pair = (Map.Entry)it.next();
-//            System.out.printf("Key: %5d Value: %f\n", pair.getKey(), pair.getValue());
-//        }
-
 
 
         // ===================================================================
@@ -130,8 +118,6 @@ public class LogisticRegression extends Predictor {
 
                 // Get the value of (parameters * feature vector).
                 double wx = hypothesis(fv);
-                //System.out.printf("%f\n", wx);
-
 
                 // Stochastic Gradient descent
                 updateParameter(fv, wx, yLabel, index);

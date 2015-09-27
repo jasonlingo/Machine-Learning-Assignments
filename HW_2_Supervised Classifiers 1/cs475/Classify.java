@@ -20,8 +20,8 @@ public class Classify {
 	final static int DEFAULT_SGD_ITERATION = 20;
 	final static double DEFAULT_ETA_ZERO = 0.01;
 
-	public static int sgdIterations;
-	public static double etaZero;
+	public static int sgd_iterations;
+	public static double sgd_eta0;
 
 	public static void main(String[] args) throws IOException {
 		// Parse the command line.
@@ -34,8 +34,13 @@ public class Classify {
 		String predictions_file = CommandLineUtilities.getOptionValue("predictions_file");
 		String algorithm = CommandLineUtilities.getOptionValue("algorithm");
 		String model_file = CommandLineUtilities.getOptionValue("model_file");
-		String sgd_iterations = CommandLineUtilities.getOptionValue("sgd_iterations");
-		String sgd_eta0 = CommandLineUtilities.getOptionValue("sgd_eta0");
+
+		sgd_iterations = DEFAULT_SGD_ITERATION;
+		if (CommandLineUtilities.hasArg("sgd_iterations"))
+			sgd_iterations = CommandLineUtilities.getOptionValueAsInt("sgd_iterations");
+		sgd_eta0 = DEFAULT_ETA_ZERO;
+		if (CommandLineUtilities.hasArg("sgd_eta0"))
+			sgd_eta0 = CommandLineUtilities.getOptionValueAsFloat("sgd_eta0");
 
 		if (mode.equalsIgnoreCase("train")) {
 			if (data == null || algorithm == null || model_file == null) {
@@ -48,19 +53,6 @@ public class Classify {
 			data_reader.close();
 			
 			// Train the model.
-			// Parse parameters for Logistic regression
-			// sgd_iterations
-			if (sgd_iterations != null){
-				sgdIterations = Integer.parseInt(sgd_iterations);
-			} else {
-				sgdIterations = DEFAULT_SGD_ITERATION;
-			}
-			// eta0
-			if (sgd_eta0 != null){
-				etaZero = Double.parseDouble(sgd_eta0);
-			} else {
-				etaZero = DEFAULT_ETA_ZERO;
-			}
 			Predictor predictor = train(instances, algorithm);
 			saveObject(predictor, model_file);
 			
@@ -102,7 +94,7 @@ public class Classify {
 				break;
 			case "logistic_regression":
 				// Set total number of iterations.
-				predictor = new LogisticRegression(sgdIterations, etaZero);
+				predictor = new LogisticRegression(sgd_iterations, sgd_eta0);
 				break;
 			default:
 				System.out.println("Please check the algorithm's name.");
@@ -112,6 +104,7 @@ public class Classify {
 
 		// Evaluate the trained model.
 		AccuracyEvaluator acuEva = new AccuracyEvaluator();
+		System.out.print("For training, ");
 		double accuracy = acuEva.evaluate(instances, predictor);
 		//System.out.printf("Accuracy of training is %f\n", accuracy);
 
@@ -132,6 +125,7 @@ public class Classify {
 
 		// Evaluate the testing result.
 		AccuracyEvaluator acuEva = new AccuracyEvaluator();
+		System.out.print("For testing, ");
 		double accuracy = acuEva.evaluate(instances, predictor);
 		//System.out.printf("Accuracy of testing is %f\n", accuracy);
 		
@@ -187,8 +181,8 @@ public class Classify {
 		registerOption("predictions_file", "String", true, "The predictions file to create.");
 		registerOption("algorithm", "String", true, "The name of the algorithm for training.");
 		registerOption("model_file", "String", true, "The name of the model file to create/load.");
-		registerOption("sgd_iterations", "Integer", true, "The number of total iterations for regression.");
-		registerOption("sgd_eta0", "Double", true, "The value of eta0.");
+		registerOption("sgd_iterations", "int", true, "The number of SGD iterations.");
+		registerOption("sgd_eta0", "double", true, "The constant scalar for learning rate in AdaGrad.");
 
 		// Other options will be added here.
 	}
