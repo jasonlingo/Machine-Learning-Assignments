@@ -34,8 +34,7 @@ public class LogisticRegression extends Predictor {
 
     // Partial gradient of the objective function at time t for feature j
     private Map<Integer, Double> Fij;
-
-
+    
     /**
      * Constructor
      * @param iteration

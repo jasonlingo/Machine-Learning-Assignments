@@ -61,7 +61,7 @@ Probability, Linear Algebra and Decision Trees\\
 \Large{Due: Tuesday September 29, 2015, 11:59pm}\\
 100 Points Total \hspace{1cm} Version 1.0}
 
-\author{}
+\author{Li-Yi Lin / llin34@jhu.edu}
 \date{}
 
 \begin{document}
@@ -78,6 +78,7 @@ Probability, Linear Algebra and Decision Trees\\
 \section{Analytical (50 points)}
 
 \paragraph{1) Fisher Linear Discriminant and Logistic Regression Classifiers (15 points)}
+Generative models and discriminative models are somehow connected given certain scenarios. Suppose that we have samples from two classes with equal prior. The first class of samples have their features independent generated from a multivariate normal distribution $N(\mu_1,\Sigma)$, and the second class of samples have their features independently generated from a multivariate normal distribution $N(\mu_2,\Sigma)$.
 
 \begin{enumerate}[(a)]
 \item Prove that the class label $y$ conditioning on the feature vector $X$ follows a logistic regression model.\\
@@ -124,25 +125,169 @@ $$=\frac{1}{1+\mathrm{e}^{ -\frac{1}{2}(
  - \frac{1}{2}( \mu_2^T\Sigma^{-1}\mu_2
 - \mu_1^T\Sigma^{-1}\mu_1)
  }}$$\\
-The equation shown above is also the logistic regression form. Thus, we proved that the class label y conditioning on the feature vector X follows a logistic regression model.
-
-
+Although the equation has one additional fixed scalar, $- \frac{1}{2}( \mu_2^T\Sigma^{-1}\mu_2 - \mu_1^T\Sigma^{-1}\mu_1)$, at the power of  $\mathrm{e}$, it still follows a logistic regression model. Thus, we have proved that the class label y conditioning on the feature vector X follows a logistic regression model.
 
 \item Prove that the classifier based on the logistic regression model obtained in (a) is equivalent the optimal Fisher linear discriminant classifier.  The optimal Fisher linear discriminant classifier is obtained using the population means and covariance matrix; see section 4.1.4 in Bishop.
 
-{\bf Hint:} You only need to show that both classifiers use the same decision rule.
+{\bf Hint:} You only need to show that both classifiers use the same decision rule.\\
+\textbf{Ans:}\\
+
+
 \end{enumerate}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \paragraph{2) Linear Models (10 points)}
+Besides the least square estimators, machine learning researchers are also interested in another type of estimators -- maximum likelihood estimators. Consider a linear model $y=X\beta+\epsilon$, where $X\in\mathbb{R}^{n \times d}$ is the design matrix, $y\in\mathbb{R}^{n}$ is the response vector, and $\epsilon\in\mathbb{R}^n$ is the random noise with each entry independently sampled from $N(0,\sigma^2)$. 
+%\begin{enumerate}[(a)]
+%\item
+Please derive the maximum likelihood estimator of $\beta$ and $\sigma$.
+\text{}\\
+\textbf{Ans:}\\
+Since each entry of $\epsilon$  is sampled from $N(0,\sigma^2)$, every $y_i \in y$ follows $N(\sum_{j=1}^{n} x_{ij}\beta_j,\sigma^2)$ and is independent from each other. We can get the probability of $y$ by following equation:\\
+$$P(y) = \prod\limits_{i=1}^n N(y_i | \sum_{j=1}^{d} x_{ij}\beta_j,\sigma^2)$$\\
+%
+$$P(y) = \prod\limits_{i=1}^n (2 \pi\sigma^2)^{-\frac{1}{2}}\mathrm{e}^{-\frac{1}{2\sigma^2}(y_i-\sum_{j=1}^{d} x_{ij}\beta_j)^2}$$
+%
+To solve the above equation, we apply nature log on both sides.\\
+$$\ln P(y) = \sum_{i=1}^{n} \{-\frac{1}{2}\ln 2\pi - \ln \sigma - \frac{1}{2\sigma^2}(y_i - \sum_{j=1}^{d} x_{ij}\beta_j)^2\}$$\\
+We want to maximize the log-likelihood regarding $\beta$ and $\sigma$. First we have to find every $\beta_j$ such that $\sum_{i=1}^{n} (y_i - \sum_{j=1}^{d} x_{ij} \beta_j)^2$ is minimized. We solve it by following equation:\\
+$$\frac{\partial}{\partial \beta_j} \sum_{i=1}^{n} (y_i - \sum_{j=1}^{d} x_{ij} \beta_j)^2 = 2\sum_{i=1}^{n} \{(y_i - \sum_{j=1}^{d} x_{ij}\beta_j)x_{ij}\}=0$$
+%
+Since $\sum_{i=1}^{n} \{(y_i - \sum_{j=1}^{d} x_{ij}\beta_j)x_{ij}\}$ is actually a matrix multiplication. So we change it back to matrix form and solve it:
+$$(y-X\beta)^TX=0$$
+$$(y^T - (X\beta)^T)X = 0$$
+$$y^TX - \beta^TX^TX=0$$
+$$\beta^TX^TX = y^TX$$
+$$\beta^T = y^TX(X^TX)^{-1}$$
+$$\beta = (y^TX(X^TX)^{-1})^T$$
+$$\beta = (X^TX)^{-1}X^Ty$$
+So we have find $\beta =(X^TX)^{-1}X^Ty$.\\
 
+%%%
+\noindent
+To find the $\sigma$ that makes the $\ln P(y)$ biggest, we apply partial derivative on $\sigma$ and set it equal to 0. We solve it by following step:
+%
+$$\frac{\partial \ln P(y)}{\partial \sigma} 
+= \sum_{i=1}^{n} \{-\frac{1}{\sigma} + \frac{2}{2\sigma^3}(y_i - \sum_{j=1}^{d}x_{ij}\beta_j)^2\}=0$$
+%
+$$-\frac{n}{\sigma} + \frac{1}{\sigma^3}\sum_{i=1}^{n} (y_i - \sum_{j=1}^{d}x_{ij}\beta_j)^2 = 0$$
+%
+$$-\frac{n}{\sigma} + \frac{1}{\sigma^3}(y - X\beta)^T(y - X\beta) = 0$$
+%
+$$n\sigma^2 = (y-X(X^TX)^{-1}X^Ty)^T(y-X(X^TX)^{-1}X^Ty)$$
+%
+$$n\sigma^2 = (y^T-y^TX(X^TX)^{-1}X^T)(y-X(X^TX)^{-1}X^Ty)$$
+%
+$$n\sigma^2 = y^Ty - y^TX(X^TX)^{-1}X^Ty - y^TX(X^TX)^{-1}X^Ty + y^TX(X^TX)^{-1}X^TX(X^TX)^{-1}X^Ty$$
+%
+$$n\sigma^2 = y^Ty - y^TX(X^TX)^{-1}X^Ty$$
+%
+$$\sigma = \sqrt{\frac{ y^Ty - y^TX(X^TX)^{-1}X^Ty}{n}}$$
+$\sigma$ must be larger or equal to 0 since it is standard deviation.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \paragraph{3) Regularization and Overfitting. (5 points)}
+Statisticians love linear models because these models are very simple and interpretable. Many variants of linear models has been proposed, and most of them are formulated as (penalized) least squares program. Here we have three least squares programs,
+\begin{align}
+\hat{\beta}_0 = &\mathop{\rm argmin}_{\beta_0}  \|y-X_1\beta_0\|_2^2, \label{partial}\\
+(\hat{\beta}_1,\hat{\beta}_2) = &\mathop{\rm argmin}_{\beta_1,\beta_2}  \|y-X_1\beta_1-X_2\beta_2\|_2^2, \label{complete}\\
+\hat{\beta}_3 = &\mathop{\rm argmin}_{\beta_3} \|y-X_1\beta_3\|_2^2 +\lambda\|\beta_3\|_2^2 \label{ridge},
+\end{align}
+where $\lambda>0$, $y\in\mathbb{R}^n$, $X_1\in\mathbb{R}^{n \times d_1}$, and $X_2\in\mathbb{R}^{n \times d_1}$. \eqref{ridge} is well known as the ridge regression. The square norm acts as a penalty function to reduce overfitting. Prove
+\begin{align}\label{overfitting}
+\|y-X_1\hat{\beta}_3\|_2^2 \geq \|y-X_1\hat{\beta}_0\|_2^2 \geq \|y-X_1\hat{\beta}_1-X_2\hat{\beta}_2\|_2^2.
+\end{align}
+\text{}\\
+\textbf{Ans:}\\
+We first prove that $\|y-X_1\hat{\beta}_3\|_2^2 \geq \|y-X_1\hat{\beta}_0\|_2^2$. Since $\hat{\beta}_0$ is the answer vector that minimizes the form $\|y-X_1\beta\|_2^2$, any other vector $\beta'$ in this form will not make it smaller than $\|y-X_1\hat{\beta}_0\|_2^2$ and so does $\hat{\beta}_3$. Therefore, we have proved that $\|y-X_1\hat{\beta}_3\|_2^2 \geq \|y-X_1\hat{\beta}_0\|_2^2$.\\ 
+
+\noindent
+Next, we need to prove that $\|y-X_1\hat{\beta}_0\|_2^2 \geq \|y-X_1\hat{\beta}_1-X_2\hat{\beta}_2\|_2^2$. Since we already know that $\hat{\beta}_1$ and $\hat{\beta}_2$ is the answer vectors that minimize $ \|y-X_1\beta_1-X_2\beta_2\|_2^2$, any other $(\beta_1, \beta_2)$ pair for this form will not make it smaller. We set $\beta_1 = \hat{\beta}_0$ and $\beta_2 = \vec{0}$, then we get $\|y-X_1\hat{\beta}_0\|_2^2 = \|y-X_1\hat{\beta}_0 - X_2\vec{0}  \|_2^2 \geq \|y-X_1\hat{\beta}_1-X_2\hat{\beta}_2\|_2^2$. Thus, we have proved that $\|y-X_1\hat{\beta}_0\|_2^2 \geq \|y-X_1\hat{\beta}_1-X_2\hat{\beta}_2\|_2^2$.\\
+
+\noindent
+Finally, we combine the above two proofs, we have proved $\|y-X_1\hat{\beta}_3\|_2^2 \geq \|y-X_1\hat{\beta}_0\|_2^2 \geq \|y-X_1\hat{\beta}_1-X_2\hat{\beta}_2\|_2^2
+$.\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph{4) Decision Tree (10 points)} Let's investigate how accurately decisions trees can learn. We start by constructing a unit square ($[0; 1] \times [0;1]$). We select $n$ samples from the square, each with a binary label ($+1$ or $-1$), such that no two samples share either $x$ or $y$ coordinates.  Unlike the programming above, each feature can be used multiple times in a decision tree. At each node we can only conduct a binary threshold split using one single feature. 
+\begin{enumerate}[(a)]
+\item Prove that we can find a decision tree of depth at most $\log_2n$, which perfectly labels all $n$ samples. \\
+\textbf{Ans:}\\
+Since all the samples share no $x$ or $y$ coordinates, if we draw a vertical or horizontal line through a sample, there will not be another sample on the same line. In other words, we can always find a line that can equally divide the samples into two groups (assume $n$ is a even number). Each feature can be used multiple times. For every procedure, we divide the samples into two group with the same size (assume the sample size is even). We repeat this procedure until we divide the samples into n labels. When we add one depth to the tree, dividing the samples into two groups, the group size will be half of the previous group size. Thus, the number of depth in a decision tree will be:
+$$2^{depth} = n$$
+$$depth = \log_2 n$$
+Therefore, we have proved that we can find a decision tree of depth at most $\log_2 n$ that perfectly labels all $n$ samples.
+
+\item If the samples can share either x or y coordinates but not both, can we still learn a decision tree which perfectly labels all $n$ samples? Why or why not?\\
+\textbf{Ans:}\\
+Assume we have four samples. Label $+1$ at (0, 0), (1, 0), (0.5, 1) and Label $-1$ at (0.5, 0). In this situation, we can not construct a decision tree with depth of $\log_2 4=2$ such that the four samples can be perfectly labelled.
 
 
-\paragraph{4) Decision Tree (10 points)} Let's investigate how accurately decisions trees can learn. We start 
-
-
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \paragraph{5) Conjugate Prior (10 points)}
+The conjugate priors are very popular in Bayesian data analysis. The formal description of the conjugate priors can be found in Chapter 2.4.2. of Bishop's PRML.
+\begin{enumerate}[(a)]
+\item Prove that the Gamma distribution with parameters $\alpha$ and $\beta$ is a conjugate prior of the Poisson distribution with parameter $\lambda$.\\
+\textbf{Ans:}\\
+Let $x_i$ follow Poisson distribution with parameter $\lambda$, then we have
+$$x_i \sim Poisson(\lambda) => p(x_i|\lambda) = \frac{\lambda^{x_i} \mathrm{e}^{-\lambda}}{x_i!} \propto \lambda^{x_i} \mathrm{e}^{-\lambda}$$ 
+and assume $\lambda$ follows Gamma distribution with parameters $\alpha$ and $\beta$\\
+$$\lambda \sim Gamma(\alpha, \beta) => P(\lambda)= \frac{\beta^{\alpha}}{\Gamma (\alpha)}\lambda^{\alpha - 1} \mathrm{e}^{-\beta \lambda } \propto \lambda^{\alpha - 1} \mathrm{e}^{-\beta \lambda}$$
+%
+Probability $P(X|\lambda)$ can be calculated as 
+$$P(X|\lambda) 
+= \frac{\prod\limits_{i=1}^n \lambda^{x_i}\mathrm{e}^{-\lambda}}{x_i!} 
+= \frac{ \lambda^{x_1+x_2+...+x_n}\mathrm{e}^{-n\lambda}}{\prod\limits_{i=1}^n x_i !}
+\propto \lambda^{x_1+x_2+...+x_n}\mathrm{e}^{-n\lambda}
+= \lambda^{n\bar{X}}\mathrm{e}^{-n\lambda}$$
+%
+where $\sum_{i=1}^{n} x_i = n\bar{x}$ and $X$ is a vector of $x_i$\\
+%
+
+By Bayes' theorem, we know 
+$$P(\lambda | X) 
+= \frac{P(X | \lambda) \times P(\lambda)}{P(X)}
+\propto  P(X|\lambda) \times P(\lambda)$$ 
+Then we can get:
+%
+$$
+P(X|\lambda) \times P(\lambda) \propto \lambda^{n\bar{x}}\mathrm{e}^{-n\lambda}  \times \lambda^{\alpha-1} \mathrm{e}^{-\beta\lambda}
+= \lambda^{n\bar{x}+\alpha - 1}\mathrm{e}^{-(n+\beta)\lambda}
+$$
+So we have 
+$$P(\lambda|x) \propto \lambda^{n\bar{x} + \alpha - 1}\mathrm{e}^{-(n + \beta)\lambda} \sim Gamma(n\bar{x}+\alpha-1, n+\beta)$$
+Therefore, we have proved that Gamma distribution with parameters $\alpha$ and $\beta$ is a conjugate prior of the Poisson distribution with parameter $\lambda$.
+
+
+\item Prove that the Beta distribution with parameters $\alpha$ and $\beta$ is a conjugate prior of the geometric distribution with parameter $p$.\\
+\textbf{Ans:}\\
+Let $x_i$ follow geometric distribution, then we have 
+$$x_i \sim Geometric(p) => P(x|P) = (1-p)^{x-1}p$$
+And assume its parameter, $p$, follows Beta distribution, then we have 
+%
+$$p \sim \text{Beta}(\alpha, \beta) 
+=> P(p|\alpha, \beta) 
+= \frac{1}{B(\alpha, \beta)}p^{\alpha -1}(1-p)^{\beta-1}
+\propto p^{\alpha -1}(1-p)^{\beta-1}$$
+%
+By Bayes' theorem, we know posterior $\propto$ prior $\times$ likelihood. So we have\\
+$$\text{posterior} \propto \prod\limits_{i=1}^n \{(1-p)^{x_i-1}p\} \times p^{\alpha -1}(1-p)^{\beta-1} 
+$$
+%
+Let $\frac{\sum_{i=1}^{n} x_i}{n} = \bar{x}$. Then above equation becomes
+$$
+(1-P)^{n\bar{x}-n}p^n \times p^{\alpha - 1}(1-p)^{\beta-1} 
+= p^{n+\alpha-1}(1-p)^{n\bar{x}+\beta-n-1}
+$$
+So, the posterior $\sim \text{Beta}(n+\alpha, n\bar{x}+\beta-n)$. Thus we have proved that the Beta distribution with parameters $\alpha$ and $\beta$ is a conjugate prior of geometric distribution with parameter p.
+
+
+
+
+
+
+
+\end{enumerate}
 
 
 \end{document}
