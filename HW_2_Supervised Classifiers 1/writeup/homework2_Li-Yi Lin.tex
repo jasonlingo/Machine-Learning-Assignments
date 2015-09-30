@@ -131,8 +131,12 @@ Although the equation has one additional fixed scalar, $- \frac{1}{2}( \mu_2^T\S
 
 {\bf Hint:} You only need to show that both classifiers use the same decision rule.\\
 \textbf{Ans:}\\
-
-
+The logistic regression model obtained in (a) uses the population means and covariance matrix as its parameter in the sigmoid function, and classifies an instance by its sigmoid value according to a decision boundary. For the optimal Fisher linear discriminant classifier, it also use its population means and covariance matrix to find its parameters. The function is shown below:\\
+$$\textbf{w} \propto S_W^{-1}(\textbf{m}_2 - \textbf{m}_1)$$
+%
+where \textbf{w} is its parameter vector, $S_W^{-1}$ is the within-class covariance matrix, and $\textbf{m}_1$ and $\textbf{m}_2$ are the mean vectors of two classes.  When performing classification task, the optimal Fisher linear discriminant classifier uses the following function to find projected value:
+$$y = f(\textbf{w}^TX)$$
+where $X$ is a feature vector of an instance. And it classifies the instance by comparing $y$ with a decision boundary. Thus, these two classifiers uses the same decision rule.
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

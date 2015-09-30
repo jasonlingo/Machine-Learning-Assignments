@@ -34,9 +34,9 @@ public class LogisticRegression extends Predictor {
 
     // Partial gradient of the objective function at time t for feature j
     private Map<Integer, Double> Fij;
-    
+
     /**
-     * Constructor
+     * Constructor, initializing variables.
      * @param iteration
      * @param eta0
      */
@@ -63,16 +63,12 @@ public class LogisticRegression extends Predictor {
         // keep all the labels and find the number of features to build
         // parameters.
         // ===================================================================
-        System.out.println("Start training------------------------------------");
-        System.out.printf("eta0: %f\n", this.etaZero);
-
         int featureNum = 0;
         for (Instance inst : instances){
             Label label = inst.getLabel();
             FeatureVector fv = inst.getFeatureVector();
             if (label != null && fv != null){
                 // Add labels
-                //System.out.printf("Label: %s\n", label.toString());
                 this.labels.add(Integer.parseInt(label.toString()));
                 // Add featureVector
                 // The feature index starts from 1.
@@ -93,25 +89,15 @@ public class LogisticRegression extends Predictor {
             this.etas.put(ii, etaZero);
             this.Fij.put(ii, 0.0);
         }
-        System.out.printf("Total features: %d\n", featureNum);
 
 
         // ===================================================================
         // Start training
         // ===================================================================
 
-        // For stochastic gradient descent.
-        int sgdModeNum = instances.size();
-
-        // Training iterations
-        System.out.print("Iteration: ");
         for (int iter = 0; iter < this.iteration; iter++){
-        //for (int iter = 0; iter < 1; iter++){
-            System.out.printf("%2d  ", iter + 1);
-
             for (int index = 0; index < this.featureVectors.size(); index++) {
                 // Get the information (feature vector and label) about this instance.
-                //int index = j % sgdModeNum;
                 FeatureVector fv = this.featureVectors.get(index);
                 int yLabel = this.labels.get(index);
 
@@ -119,46 +105,32 @@ public class LogisticRegression extends Predictor {
                 double wx = hypothesis(fv);
 
                 // Stochastic Gradient descent
-                updateParameter(fv, wx, yLabel, index);
+                updateParameter(fv, wx, yLabel);
             }
         }
-        System.out.println();
-
-//        Iterator it = this.parameters.entrySet().iterator();
-//        System.out.println("Final parameters:");
-//        while (it.hasNext()){
-//            Map.Entry pair = (Map.Entry)it.next();
-//            System.out.printf("Key: %5d Value: %f\n", pair.getKey(), pair.getValue());
-//        }
-
     }
 
 
     /**
-     *
+     * Classify the instance.
      * @param instance
-     * @return
+     * @return a predicted label.
      */
     @Override
     public Label predict(Instance instance) {
         FeatureVector fv = instance.getFeatureVector();
         double hp = hypothesis(fv);
-        //System.out.printf("Org: %s Pred: %f\n", instance.getLabel().toString(), hp);
         return new ClassificationLabel(sigmoid(hp) >= 0.5? 1:0);
     }
 
 
     /**
-     * Update each parameters.
+     * Update parameters (Fij and W_j).
      * @param fv
      * @param wx
      * @param y
-     * @return
      */
-    private void updateParameter(FeatureVector fv, double wx, int y, int iter){
-        // A temp hashmap for keeping the updated parameters.
-        //HashMap<Integer, Double> newParameters = new HashMap<>();
-
+    private void updateParameter(FeatureVector fv, double wx, int y){
         Iterator it = fv.iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
@@ -171,7 +143,7 @@ public class LogisticRegression extends Predictor {
             this.Fij.put((int)pair.getKey(), Math.pow(delta,2) + preFtj);
             AdaGrad((int) pair.getKey());
 
-            // Update parameters
+            // Update W_j
             // W_j' = W_j + eta_ij * delta_i (feature i)
             double newW_j = this.parameters.get(pair.getKey()) + this.etas.get(pair.getKey()) * delta;
             this.parameters.put((int)pair.getKey(), newW_j);
@@ -180,8 +152,9 @@ public class LogisticRegression extends Predictor {
 
 
     /**
-     * Calculate a sigmoid value for a given parameters and features.
-     * @return
+     * Calculate hypothesis value of given feature vector.
+     * @param fv
+     * @return hypothesis value
      */
     private double hypothesis(FeatureVector fv){
         double wx = 0.0;
@@ -203,6 +176,7 @@ public class LogisticRegression extends Predictor {
 
     /**
      * Adaptively Choosing the Learning Rate
+     * @param featIdx
      */
     private void AdaGrad(int featIdx){
         double newEta = etaZero / (Math.sqrt(IJ + Fij.get(featIdx)));
