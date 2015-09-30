@@ -136,7 +136,22 @@ $$\textbf{w} \propto S_W^{-1}(\textbf{m}_2 - \textbf{m}_1)$$
 %
 where \textbf{w} is its parameter vector, $S_W^{-1}$ is the within-class covariance matrix, and $\textbf{m}_1$ and $\textbf{m}_2$ are the mean vectors of two classes.  When performing classification task, the optimal Fisher linear discriminant classifier uses the following function to find projected value:
 $$y = f(\textbf{w}^TX)$$
-where $X$ is a feature vector of an instance. And it classifies the instance by comparing $y$ with a decision boundary. Thus, these two classifiers uses the same decision rule.
+where $X$ is a feature vector of an instance. And it classifies the instance by comparing $y$ with a decision boundary. In the logistic regression model in (a), the decision boundary is 0.5 for whole function
+ $$\frac{1}{1+\mathrm{e}^{ 
+ -(\mu_1^T-\mu_2^T)\Sigma^{-1}X
+ - \frac{1}{2}( \mu_2^T\Sigma^{-1}\mu_2
+- \mu_1^T\Sigma^{-1}\mu_1)
+ }}$$\\
+And that means when $ 
+ (-(\mu_1^T-\mu_2^T)\Sigma^{-1}X
+ - \frac{1}{2}( \mu_2^T\Sigma^{-1}\mu_2
+- \mu_1^T\Sigma^{-1}\mu_1))
+ $ is larger than zero, the logistic sigmoid value will be larger than 0.5. When it is small than zero, its logistic sigmoid value will be less than 0.5. In other words, we can use zero as a decision boundary to the function $ 
+ (-(\mu_1^T-\mu_2^T)\Sigma^{-1}X
+ - \frac{1}{2}( \mu_2^T\Sigma^{-1}\mu_2
+- \mu_1^T\Sigma^{-1}\mu_1))
+ $. 
+ For the optimal Fisher linear discriminant classifier also use zero as a decision boundary to check the value of $y$. Thus, these two classifiers uses the same decision rule.
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
