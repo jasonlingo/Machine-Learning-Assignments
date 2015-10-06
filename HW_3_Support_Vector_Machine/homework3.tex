@@ -1,0 +1,292 @@
+\documentclass[11pt]{article}
+
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{url}
+\usepackage{wrapfig}
+\usepackage{color}
+\usepackage{marvosym}
+\usepackage{enumerate}
+\usepackage{subfigure}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{bbm}
+
+
+\oddsidemargin 0mm
+\evensidemargin 5mm
+\topmargin -20mm
+\textheight 240mm
+\textwidth 160mm
+
+
+
+\newcommand{\vwi}{{\bf w}_i}
+\newcommand{\vw}{{\bf w}}
+\newcommand{\vx}{{\bf x}}
+\newcommand{\vy}{{\bf y}}
+\newcommand{\vxi}{{\bf x}_i}
+\newcommand{\yi}{y_i}
+\newcommand{\vxj}{{\bf x}_j}
+\newcommand{\vxn}{{\bf x}_n}
+\newcommand{\yj}{y_j}
+\newcommand{\ai}{\alpha_i}
+\newcommand{\aj}{\alpha_j}
+\newcommand{\X}{{\bf X}}
+\newcommand{\Y}{{\bf Y}}
+\newcommand{\vz}{{\bf z}}
+\newcommand{\msigma}{{\bf \Sigma}}
+\newcommand{\vmu}{{\bf \mu}}
+\newcommand{\vmuk}{{\bf \mu}_k}
+\newcommand{\msigmak}{{\bf \Sigma}_k}
+\newcommand{\vmuj}{{\bf \mu}_j}
+\newcommand{\msigmaj}{{\bf \Sigma}_j}
+\newcommand{\pij}{\pi_j}
+\newcommand{\pik}{\pi_k}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\el}{\mathcal{L}}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\vxij}{{\bf x}_{ij}}
+\newcommand{\vt}{{\bf t}}
+\newcommand{\yh}{\hat{y}}
+\newcommand{\code}[1]{{\footnotesize \tt #1}}
+\newcommand{\alphai}{\alpha_i}
+
+\pagestyle{myheadings}
+\markboth{Homework 3}{Fall 2015 CS 475 Machine Learning: Homework 3}
+
+
+\title{CS 475 Machine Learning: Homework 3\\Supervised Classifiers 2\\
+\Large{Due: Friday October 16, 2015, 11:59pm}\\
+100 Points Total \hspace{1cm} Version 1.0}
+\author{}
+\date{}
+
+\begin{document}
+\large
+\maketitle
+\thispagestyle{headings}
+
+\vspace{-.5in}
+
+{\bf Make sure to read from start to finish before beginning the assignment.}
+\section{Programming (50 points)}
+In this assignment you will implement a simple but effective stochastic gradient descent algorithm to solve the Support Vector Machine
+for binary classification problems. The approach is called \textit{Primal Estimated sub-GrAdient SOlver for SVM} (Pegasos).\footnote{Shalev-Shwartz, S., Singer, Y., Srebro, N., Cotter, A. (2011). Pegasos: Primal estimated sub-gradient solver for svm. Mathematical programming, 127(1), 3-30.}
+The number of iterations required by Pegasos to obtain a solution of accuracy $\epsilon$ is $O(1/\epsilon)$, while previous stochastic gradient descent methods require $O(1/\epsilon^2)$.
+
+\subsection{SVM}
+A Support Vector Machine constructs a hyperplane in high dimensional space, which separates training points of different classes while keeping a large margin with regards to the training points closest to the hyperplane. SVMs are typically formulated as a constrained quadratic programming problem. We can also reformulate it as an equivalent unconstrained problem of empirical loss plus a regularization term. Formally, given a training set $\{(\vxi,\yi)\}_{i=1}^N$, where $\vx_i \in \mathbb{R}^M$ and $y_i \in\{+1,-1\}$, we want to find the minimizer of the problem:
+\begin{align}
+\label{eq:obj}
+\min_\vw \lambda \frac{1}{2}||\vw||^2+\frac{1}{N} \sum\limits_{i=1}^N \mathit{l}(\vw;(\vxi,\yi))
+\end{align}
+where $\lambda$ is the regularization parameter,
+\begin{align}
+\mathit{l}(\vw;(\vx,y))=\max\{0,1-y\langle \vw , \vx\rangle\}
+\end{align}
+and $\langle\cdot,\cdot\rangle$ is the inner product operator. As you might have noticed, we omit the parameter for the bias term throughout this homework (i.e., the hyperplane is always across the origin).
+
+\subsection{Pegasos}
+\label{sec:pegasos}
+Pegasos performs stochastic gradient descent on the primal objective Eq. \ref{eq:obj}. Similar to the stochastic version of logistic regression in homework 2, the learning rate decreases with each iteration to guarantee convergence. But unlike AdaGrad, where the learning rate is adaptively chosen based on historical information, here we adopt a simple strategy and make the learning rate a function of the time steps.
+
+On each time step Pegasos operates as follow. Initially, we set $\vw_0=0$. On time step $t$ of the algorithm (starting from $t=1$) we first choose a random training example $(\vx_{i_t},y_{i_t})$ by picking an index $i_t \in \{1,\ldots,m\}$ uniformly at random (see Section \ref{sec:random}). We then replace the objective in Eq. \ref{eq:obj} with an approximation based on the training example $(\vx_{i_t},y_{i_t})$, yielding:
+\begin{align}
+\label{eq:sgd}
+f(\vw;i_t)=\lambda\frac{1}{2}||\vw||^2+ \mathit{l}(\vw;(\vx_{i_t},y_{i_t}))
+\end{align}
+We consider the sub-gradient of the above approximate objective, given by:
+\begin{align}
+\frac{\partial f(\vw;i_t)}{\partial \vw_t}=\lambda \vw_t-\mathbbm{1}[y_{i_t}\langle\vw_t,\vx_{i_t}\rangle < 1]y_{i_t}\vx_{i_t}
+\end{align}
+where $\mathbbm{1}[\cdot]$ is the indicator function which takes a value of $1$ if its argument is true, and $0$ otherwise. We then update $\vw_{t+1} \leftarrow \vw_t-\eta_t \frac{\partial f(\vw;i_t)}{\partial \vw_t}$ using a step size of $\eta_t=1/(\lambda t)$. Note that this update can be written as:
+\begin{align}
+\vw_{t+1} \leftarrow (1-\frac{1}{t})\vw_t+\frac{1}{\lambda t} \mathbbm{1}[y_{i_t}\langle\vw_t,\vx_{i_t}\rangle < 1]y_{i_t}\vx_{i_t}
+\end{align}
+After a predetermined number $T$ of iterations, we output the last iterate $\vw_T$.
+
+You will note that the above update rule changes $\vw$ even for cases where the value in $\vxi$ is 0. This is a non-sparse update: every feature is updated every time. While there are sparse versions of Pegasos, for this homework you should implement the non-sparse solution. This means that every time you update, every parameter must be updated. This will make training slower on larger feature sets (such as NLP) but it should still be reasonable. We suggest you focus testing on the smaller and thus faster datasets.
+
+\subsection{Offset Feature}
+None of the math above mentions an offset feature (bias feature) $\vw_0$, that corresponds to a $x_{i,0}$ that is always 1. It turns out that we don't need this if our data is centered. By centered we mean that $E[y] = 0$. For simplicity, assume that the data used in this assignment is centered (even though this may not be true). Do not include another feature that is always 1 ($x_0$) or weight ($\vw_0$) for it.
+
+\subsection{Convergence}
+In practice, SGD optimization requires the program to determine when it has converged. Ideally, a maximized function has a gradient value of 0, but due to issues related to your step size, random noise, and machine precision, your gradient will likely never be exactly zero. Common practice is to check that the $L_p$ norm of the gradient is less than some $\delta$, for some $p$. For the sake of simplicity and consistent results, we will not do this in this assignment. Instead, your program should take a parameter \textbf{sgd\_iterations} which is \emph{exactly} how many iterations you should run (not an upper bound). An iteration is a single pass over every training example. \textbf{Note that the ``$t$'' in Section~\ref{sec:pegasos} indexes a time step, which is different from the ``iterations'' defined here.}
+The default of \textbf{sgd\_iterations} should be 20.
+
+You can add a command line parameter by adding the following code block to the {\tt createCommandLineOptions} method of {\tt Classify}.
+\begin{footnotesize}
+\begin{verbatim}
+registerOption("sgd_iterations", "int", true, "The number of SGD iterations.");
+\end{verbatim}
+\end{footnotesize}
+
+Be sure to add the option name exactly as it appears above. A common mistake is to change underscores to dashes.
+
+You can read the value from the command line by adding the following to the main method of {\tt Classify}:
+\begin{footnotesize}
+\begin{verbatim}
+int sgd_iterations = 20;
+if (CommandLineUtilities.hasArg("sgd_iterations"))
+    sgd_iterations = CommandLineUtilities.getOptionValueAsInt("sgd_iterations");
+\end{verbatim}
+
+\end{footnotesize}
+
+Note that this is the same argument added in the last assignment. You can reuse that argument for this algorithm.
+
+\subsection{Regularization Parameter}
+Pegasos uses a Regularization Parameter $\lambda$ to adjust the relative strength of regularization. Your default value for $\lambda$ should be $10^{-4}$. You \emph{must} add a command line argument to allow this value to be adjusted via the command line.
+
+Add this command line option by adding the following code to the \code{createCommandLineOptions} method of \code{Classify}.
+\begin{footnotesize}
+\begin{verbatim}
+registerOption("pegasos_lambda", "double", true, "The regularization parameter for Pegasos.");
+\end{verbatim}
+\end{footnotesize}
+
+Be sure to add the option name exactly as it appears above. A common mistake is to change underscores to dashes.
+
+You can then read the value from the command line by adding the following to the main method of \code{Classify}:
+\begin{footnotesize}
+\begin{verbatim}
+double pegasos_lambda = 1e-4;
+if (CommandLineUtilities.hasArg("pegasos_lambda"))
+    pegasos_lambda = CommandLineUtilities.getOptionValueAsFloat("pegasos_lambda");
+\end{verbatim}
+\end{footnotesize}
+
+\subsection{Sampling Instances}
+\label{sec:random}
+Pegasos relies on sampling examples for each time step. For simplicity, we will NOT randomly sample instances. Instead, on round $i$ you should update using the $i$th example. An iteration involves a single pass in order through all the provided instances. You will make several passes through the data based on {\tt sgd\_iterations}.
+
+\subsection{Implementation Notes}
+\begin{enumerate}[1.]
+\item Many descriptions of SGD call for shuffling your data before learning. This is a good idea to break any dependence in the order of your data. In order to achieve consistent results for everyone, we are requiring that you \textbf{do not shuffle your data}. When you are training, you will go through your data in the order it appeared in the data file.
+
+\item In SVM, $y \in \{+1,-1\}$, but the class labels in our data files are 0/1 valued. To resolve this inconsistency, convert class label $0$ to $-1$ before training.
+
+\item
+During prediction, a new instance $\vx$ is predicted by the following rule:\\
+\\
+$\hat{y}_{new} = 1$ if $\langle\vw, \vx\rangle \ge 0$\\
+$\hat{y}_{new} = 0$ otherwise\\
+
+\item
+Initialize the parameters $\vw$ to $0$.
+
+\end{enumerate}
+
+\subsection{Deliverables}
+You need to implement the Pegasos algorithm. Your Pegasos predictor will be selected by passing the string \code{pegasos} as the argument for the algorithm parameter.
+
+\subsection{How Your Code Will Be Called}
+
+To train a model we will call:
+\begin{verbatim}
+java cs475.Classify -mode train -algorithm pegasos \
+        -model_file speech.pegasos.model \
+        -data speech.train
+\end{verbatim}
+
+There are some additional parameters which your program must support during training:
+\begin{verbatim}
+-pegasos_lambda	lambda   // sets the the constant scalar, default = 1e-4
+-sgd_iterations t  // sets the number of SGD iterations, default = 20
+\end{verbatim}
+
+All of these parameters are \emph{optional}. If they are not present, they should be set to their default values.\\
+\\
+To make predictions using a model we will call:
+\begin{verbatim}
+java cs475.Classify -mode test -algorithm pegasos \
+        -model_file speech.pegasos.model \
+        -data speech.test \
+        -predictions_file speech.test.predictions
+\end{verbatim}
+
+Remember that your output should be 0/1 valued, not real valued.
+
+\section{Analytical (50 points)}
+
+The following problems consider a standard binary classification setting: we are given $n$ observations with $m$ features, $x_1,...,x_n \in \mathbb{R}^m$.
+
+\paragraph{1) Overfitting (8 points)}
+SVMs using nonlinear kernels usually have two tuning parameters (regularization parameter $C$ and kernel parameter $\gamma$), which are usually determined by cross validation. 
+\begin{enumerate}[(a)]
+\item Suppose we use cross validation to determine the non-linear kernel parameter and slack variable for an SVM. We find that classifiers using parameters $(c_1,\gamma_1)$ and $(c_2,\gamma_2)$ achieve the same cross validation error, but $(c_1,\gamma_1)$ leads to fewer support vectors than $(c_2,\gamma_2)$. Explain which set of parameters should we choose for the final model?
+\item The optimization problem of linear SVMs can be in either primal or dual form. As we know, the primal form has $m$ parameters to learn, while the dual form has $n$ parameters to learn. If $m \gg n$, is it true that the dual form reduces over-fitting since it has fewer parameters? Explain.
+\end{enumerate}
+
+\paragraph{2) Hinge Loss (12 points)}
+
+Linear SVMs can be formulated in an unconstrained optimization problem
+\begin{align}\label{SVM}
+\min_{w,b}\sum_{i=1}^n H(y_i(w^Tx_i)) + \lambda\|w\|_2^2,
+\end{align}
+where $\lambda$ is the regularization parameter and $H(a) = \max(1-a,0)$ is the well known hinge loss function. The hinge loss function can be viewed as a convex surrogate of the 0/1 loss function $I(a \leq 0)$.
+\begin{enumerate}[(a)]
+\item Prove that $H(a)$ is a convex function of $a$.
+\item The function $L(a) = \max(-a,0)$ can also approximate the 0/1 loss function. What is the disadvantage of using this function instead?
+\item If $H'(a) = \max(0.5-a,0)$, show that there exists $\lambda'$ such that \eqref{SVMa} is equivalent to \eqref{SVM}.  Hint: think about the geometric interpretation of hinge loss.
+\begin{align}\label{SVMa}
+\min_{w,b}\sum_{i=1}^n H'(y_i(w^Tx_i)) + \lambda'\|w\|_2^2.
+\end{align}
+\end{enumerate}
+
+\paragraph{3) Kernel Trick (10 points)}
+The kernel trick extends SVMs to handle with nonlinear data sets. However, an improper use of a kernel function can cause serious over-fitting. Consider the following kernels.
+\begin{enumerate}[(a)]
+\item Polynomial kernel: $K(x, x') = (1 + (x x'^T))^d$, where  $d\in\mathbb{N}$. Does increasing $d$ make over-fitting more or less likely?
+\item Gaussian kernel: $K(x, x') = \exp(-|| x-x'||^2 / 2 \sigma^2)$, where $\sigma>0$. Does increasing $\sigma$ make over-fitting more or less likely?
+\end{enumerate}
+We say $K$ is a kernel function, if there exists some transformation $\phi:\mathbb{R}^m\rightarrow \mathbb{R}^{m'}$ such that $K(x_i,x_{i'}) = \left<\phi(x_i),\phi(x_{i'})\right>$.
+\begin{enumerate}[(c)]
+\item Let $K_1$ and $K_2$ be two kernel functions. Prove that $K(x_i,x_{i'}) = K_1(x_i,x_{i'}) + K_2(x_i,x_{i'})$ is also a kernel function.
+\end{enumerate}
+
+\paragraph{4) Prediction using Kernel (8 points)} 
+One of the differences between linear SVMs and kernel SVMs concerns computational complexity at prediction time.
+\begin{enumerate}[(a)]
+\item What is the computational complexity of prediction of a linear SVM in terms of the examples $n$ and features $m$?
+\item What is the computational complexity of prediction of a non-linear SVM in terms of the examples $n$, features $m$ and support vectors $s$?
+\end{enumerate}
+
+\paragraph{5) Stochastic Gradient Algorithm (12 points)}
+
+The stochastic gradient algorithm is a very powerful optimization tool to solve large-scale machine learning problems. Instead of computing the gradient over the entire data set before making an update, the stochastic gradient algorithm computes the gradient over a single sample, then updates the parameters. By passing over the entire data set of $n$ samples in this fashion we can converge to the optimal parameters.
+
+A single iteration of stochastic gradient considers a single example.
+While it takes many more iterations, each iteration is much faster, both in terms of memory and computation.
+
+Consider a ridge regression problem with $n$ samples:
+\begin{align}
+\hat{\beta} = \arg\min_{\beta}\frac{1}{n}\sum_{i=1}^n(y_i - x_i^T\beta)^2 + \lambda\|\beta\|_2^2.
+\end{align}
+In each iteration, instead of using only one example, we randomly choose $k$ out of $n$ samples and obtain $(x_{1'},y_{1'}),...,(x_{k'},y_{k'})$. 
+
+\begin{enumerate}[(a)]
+\item What is the computational complexity of computing the mini-batch stochastic gradient or gradient at each iteration (using $k$ and $n$ samples respectively)?
+\item What are the advantages/disadvantages of increasing $k$ in terms of computational complexity (using $k$ and $n$ samples respectively)? What is traded-off by increasing/decreasing $k$?
+\item Give one advantage and one disadvantage of using stochastic gradient
+descent with $k=1$, ignoring computational considerations.  Explain.
+\end{enumerate}
+
+
+\section{What to Submit}
+In each assignment you will submit two things.
+\begin{enumerate}
+\item {\bf Code:} Your code as a zip file named {\tt library.zip}. {\bf You must submit source code (.java files)}. We will run your code using the exact command lines described above, so make sure it works ahead of time. Remember to submit all of the source code, including what we have provided to you.
+\item {\bf Writeup:} Your writeup as a {\bf PDF file} (compiled from latex) containing answers to the analytical questions asked in the assignment. Make sure to include your name in the writeup PDF and use the provided latex template for your answers.
+\end{enumerate}
+Make sure you name each of the files exactly as specified (library.zip and writeup.pdf).
+
+To submit your assignment, visit the ``Homework'' section of the website (\href{http://www.cs475.org/}{http://www.cs475.org/}.)
+
+\section{Questions?}
+Remember to submit questions about the assignment to the appropriate group on the class discussion board: \href{http://bb.cs475.org/}{http://bb.cs475.org}.
+
+\end{document}
