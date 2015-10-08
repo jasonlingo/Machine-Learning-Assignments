@@ -35,6 +35,10 @@ public class FeatureVector implements Serializable {
 		return this._featureVector.size();
 	}
 
+	public boolean containsKey(int index){
+		return this._featureVector.containsKey(index);
+	}
+
 
 	/**
 	 * Create an iterator for the feature vector.

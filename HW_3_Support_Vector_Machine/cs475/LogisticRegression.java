@@ -100,7 +100,7 @@ public class LogisticRegression extends Predictor {
                 FeatureVector fv = this.featureVectors.get(index);
                 int yLabel = this.labels.get(index);
 
-                // Get the value of (parameters * feature vector).
+                // Get the value of (parameters . feature vector).
                 double wx = hypothesis(fv);
 
                 // Stochastic Gradient descent

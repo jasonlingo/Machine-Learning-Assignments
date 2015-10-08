@@ -1,0 +1,27 @@
+bio:
+For training, the accuracy is 0.996500 (1993 / 2000)
+For testing, the accuracy is 0.975000 (195 / 200)
+
+nlp:
+For training, the accuracy is 1.000000 (1000 / 1000)
+For testing, the accuracy is 0.796667 (239 / 300)
+
+speech:
+For training, the accuracy is 1.000000 (400 / 400)
+For testing, the accuracy is 0.880000 (88 / 100)
+
+finance: 
+For training, the accuracy is 0.647273 (356 / 550)
+For testing, the accuracy is 0.900000 (27 / 30)
+
+vision: 
+For training, the accuracy is 1.000000 (500 / 500)
+For testing, the accuracy is 1.000000 (80 / 80)
+
+easy:
+For training, the accuracy is 1.000000 (900 / 900)
+For testing, the accuracy is 1.000000 (100 / 100)
+
+hard:
+For training, the accuracy is 0.534444 (481 / 900)
+For testing, the accuracy is 0.550000 (55 / 100)

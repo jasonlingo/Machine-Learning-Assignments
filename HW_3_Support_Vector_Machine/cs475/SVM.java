@@ -1,9 +1,6 @@
 package cs475;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A Support Vector Machine class.
@@ -13,7 +10,7 @@ public class SVM extends Predictor{
 
 
     // Parameters
-    private double[] parameters;
+    private Map<Integer, Double> parameters;
     // Iteration limit
     private int iteration;
     // Initial pegasos_lambda;
@@ -50,8 +47,9 @@ public class SVM extends Predictor{
             Label label = inst.getLabel();
             FeatureVector fv = inst.getFeatureVector();
             if (label != null && fv != null){
-                // Add labels
-                this.labels.add(Integer.parseInt(label.toString()));
+                // Add labels, convert class label 0 to -1
+                int labelInt = Integer.parseInt(label.toString());
+                this.labels.add(labelInt == 0? -1:labelInt);
                 // Add featureVector
                 this.featureVectors.add(fv);
                 // Find the total number of features
@@ -64,24 +62,73 @@ public class SVM extends Predictor{
                 }
             }
         }
-        this.parameters = new double[featureNum + 1]; // Feature index starts from 1
-
+        //this.parameters = new double[featureNum + 1]; // Feature index starts from 1
+        // Initialize the parameters
+        this.parameters = new HashMap<>();
+        for (int ii = 1; ii <= featureNum; ii++){
+            this.parameters.put(ii, 0.0);
+        }
 
         // ===================================================================
         // Start training.
         // ===================================================================
+        int timeStep = 1;
         for (int iter = 1; iter <= this.iteration; iter++){
-            
+            for (int index = 0; index < this.featureVectors.size(); index++) {
+                // Get the information (feature vector and label) about this instance.
+                FeatureVector fv = this.featureVectors.get(index);
+                int yLabel = this.labels.get(index);
+
+                // Set eta
+                double eta = 1.0 / (pegasos_lambda * (double)timeStep);
+
+                // Get the value of (parameters . feature vector).
+                double wx = innerProd(fv);
+                if (yLabel * wx < 1) {
+                    for (Map.Entry<Integer, Double> pair : parameters.entrySet()){
+                        double featValue = 0.0;
+                        if (fv.containsKey(pair.getKey())){
+                            featValue = fv.get(pair.getKey());
+                        }
+                        double newW = (1.0 - eta * pegasos_lambda) * pair.getValue() +
+                                       eta * yLabel * featValue;
+                        parameters.put(pair.getKey(), newW);
+                    }
+                } else { // wx >= 1
+                    for (Map.Entry<Integer, Double> pair : parameters.entrySet()){
+                        double newW = (1.0 - eta * pegasos_lambda) * pair.getValue();
+                        parameters.put(pair.getKey(), newW);
+                    }
+                }
+                // Increase timeStep by one
+                timeStep++;
+            }
         }
-
-
     }
 
 
+    /**
+     * Calculate hypothesis value of given feature vector.
+     * @param fv
+     * @return hypothesis value
+     */
+    private double innerProd(FeatureVector fv){
+        double wx = 0.0;
+        Iterator it = fv.iterator();
+        while (it.hasNext()){
+            Map.Entry pair = (Map.Entry)it.next();
+            if (this.parameters.containsKey(pair.getKey())){
+                wx += this.parameters.get(pair.getKey()) * (double)pair.getValue();
+            }
+        }
+        return wx;
+    }
 
     @Override
     public Label predict(Instance instance) {
-        return null;
+        FeatureVector fv = instance.getFeatureVector();
+        double wx = innerProd(fv);
+        return new ClassificationLabel(wx >= 0? 1:0);
     }
 
 }
