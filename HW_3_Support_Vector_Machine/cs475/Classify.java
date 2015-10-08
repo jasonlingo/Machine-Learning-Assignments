@@ -22,6 +22,7 @@ public class Classify {
 
 	public static int sgd_iterations;
 	public static double sgd_eta0;
+	public static double pegasos_lambda;
 
 	public static void main(String[] args) throws IOException {
 		// Parse the command line.
@@ -32,15 +33,20 @@ public class Classify {
 		String mode = CommandLineUtilities.getOptionValue("mode");
 		String data = CommandLineUtilities.getOptionValue("data");
 		String predictions_file = CommandLineUtilities.getOptionValue("predictions_file");
-		String algorithm = CommandLineUtilities.getOptionValue("algorithm");
 		String model_file = CommandLineUtilities.getOptionValue("model_file");
+		String algorithm = CommandLineUtilities.getOptionValue("algorithm");
 
 		sgd_iterations = DEFAULT_SGD_ITERATION;
 		if (CommandLineUtilities.hasArg("sgd_iterations"))
 			sgd_iterations = CommandLineUtilities.getOptionValueAsInt("sgd_iterations");
+
 		sgd_eta0 = DEFAULT_ETA_ZERO;
 		if (CommandLineUtilities.hasArg("sgd_eta0"))
 			sgd_eta0 = CommandLineUtilities.getOptionValueAsFloat("sgd_eta0");
+
+		pegasos_lambda = 1e-4;
+		if (CommandLineUtilities.hasArg("pegasos_lambda"))
+			pegasos_lambda = CommandLineUtilities.getOptionValueAsFloat("pegasos_lambda");
 
 		if (mode.equalsIgnoreCase("train")) {
 			if (data == null || algorithm == null || model_file == null) {
@@ -95,6 +101,9 @@ public class Classify {
 			case "logistic_regression":
 				// Set total number of iterations.
 				predictor = new LogisticRegression(sgd_iterations, sgd_eta0);
+				break;
+			case "pegasos":
+				predictor = new SVM(sgd_iterations, pegasos_lambda);
 				break;
 			default:
 				System.out.println("Please check the algorithm's name.");
@@ -183,6 +192,7 @@ public class Classify {
 		registerOption("model_file", "String", true, "The name of the model file to create/load.");
 		registerOption("sgd_iterations", "int", true, "The number of SGD iterations.");
 		registerOption("sgd_eta0", "double", true, "The constant scalar for learning rate in AdaGrad.");
+		registerOption("pegasos_lambda", "double", true, "The regularization parameter for Pegasos.");
 
 		// Other options will be added here.
 	}

@@ -71,9 +71,8 @@ public class LogisticRegression extends Predictor {
                 // Add labels
                 this.labels.add(Integer.parseInt(label.toString()));
                 // Add featureVector
-                // The feature index starts from 1.
                 this.featureVectors.add(fv);
-                // Add parameters according to the total number of features
+                // Find the total number of features
                 Iterator it = fv.iterator();
                 while (it.hasNext()){
                     Map.Entry pair = (Map.Entry)it.next();

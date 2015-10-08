@@ -1,6 +1,6 @@
 #!/bin/bash 
 
-java cs475/Classify -mode train -algorithm logistic_regression -model_file model/bio.logisticRegression.model -data Data/bio.train 
+java cs475/Classify -mode train -algorithm pegasos -model_file model/bio.pegasos.model -data Data/bio.train 
 
 java cs475/Classify -mode test -model_file model/bio.logisticRegression.model -data DATA/bio.dev -predictions_file prediction/bio.dev.logisticRegressionPred
 
