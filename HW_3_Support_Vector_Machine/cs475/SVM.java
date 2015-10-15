@@ -31,7 +31,10 @@ public class SVM extends Predictor{
 
     }
 
-
+    /**
+     * A SVM traing process.
+     * @param instances
+     */
     @Override
     public void train(List<Instance> instances){
         // ===================================================================
@@ -62,7 +65,6 @@ public class SVM extends Predictor{
                 }
             }
         }
-        //this.parameters = new double[featureNum + 1]; // Feature index starts from 1
         // Initialize the parameters
         this.parameters = new HashMap<>();
         for (int ii = 1; ii <= featureNum; ii++){
@@ -84,9 +86,11 @@ public class SVM extends Predictor{
 
                 // Get the value of (parameters . feature vector).
                 double wx = innerProd(fv);
+                // Update every parameter
                 if (yLabel * wx < 1) {
                     for (Map.Entry<Integer, Double> pair : parameters.entrySet()){
                         double featValue = 0.0;
+                        // Check whether the feature is existing
                         if (fv.containsKey(pair.getKey())){
                             featValue = fv.get(pair.getKey());
                         }
@@ -94,13 +98,13 @@ public class SVM extends Predictor{
                                        eta * yLabel * featValue;
                         parameters.put(pair.getKey(), newW);
                     }
-                } else { // wx >= 1
+                } else { // yLabel * wx >= 1
                     for (Map.Entry<Integer, Double> pair : parameters.entrySet()){
                         double newW = (1.0 - eta * pegasos_lambda) * pair.getValue();
                         parameters.put(pair.getKey(), newW);
                     }
                 }
-                // Increase timeStep by one
+                // Increase timeStep by one after process one instance
                 timeStep++;
             }
         }
