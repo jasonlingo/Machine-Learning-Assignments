@@ -22,8 +22,8 @@ public class SVM extends Predictor{
 
     /**
      * Constructor
-     * @param iteration
-     * @param pegasos_lambda
+     * @param iteration: the total number of iteration for training.
+     * @param pegasos_lambda: the value of lambda for pegasos.
      */
     public SVM(int iteration, double pegasos_lambda){
         this.iteration = iteration;
@@ -32,7 +32,7 @@ public class SVM extends Predictor{
     }
 
     /**
-     * A SVM traing process.
+     * SVM training process.
      * @param instances
      */
     @Override
@@ -112,9 +112,9 @@ public class SVM extends Predictor{
 
 
     /**
-     * Calculate hypothesis value of given feature vector.
-     * @param fv
-     * @return hypothesis value
+     * Calculate inner product value of given feature vector and parameters.
+     * @param fv: the given feature vector
+     * @return inner product value
      */
     private double innerProd(FeatureVector fv){
         double wx = 0.0;
@@ -128,6 +128,14 @@ public class SVM extends Predictor{
         return wx;
     }
 
+    /**
+     * Predict the class of the given instance.
+     * If the value of the inner product of the instance and the parameter
+     * is larger than 0, predict its class to 1; otherwise, predict its class
+     * to 0.
+     * @param instance
+     * @return: ClassificationLabel
+     */
     @Override
     public Label predict(Instance instance) {
         FeatureVector fv = instance.getFeatureVector();
