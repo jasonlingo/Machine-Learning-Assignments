@@ -229,7 +229,7 @@ We let $F_k = \frac{1}{k}\sum_{i=1}^k(y_i - x_i^T\beta)^2 + \lambda\|\beta\|_2^2
 For finding the gradient descent at each iteration, the equation will be:
 $$\beta' = \beta + \eta \bigtriangledown F_k$$
 $$\bigtriangledown F_k = \frac{\partial F}{\partial \beta} = \frac{2}{k}\sum_{i=1}^{k}(y_i - x_i^T\beta)(-x_i) + 2\lambda\beta$$
-As we can see, the complexity at each iteration is related to computing $\bigtriangledown F_k$. So the complexity is $O(km)$ due to computing $x_i^T\beta$ for $k$ times.
+As we can see, the complexity at each iteration is related to computing $\bigtriangledown F_k$. So the complexity is $O(km)$ due to computing $x_i^T\beta$ for $k$ times. If using gradient ($n$ samples at each iteration), then the complexity is $O(nm)$ at each iteration.
 
 \item What are the advantages/disadvantages of increasing $k$ in terms of computational complexity (using $k$ and $n$ samples respectively)? What is traded-off by increasing/decreasing $k$?\\
 \textbf{Ans:}\\
