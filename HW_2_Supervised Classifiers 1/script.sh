@@ -27,3 +27,4 @@ java cs475/Classify -mode test -model_file model/easy.logisticRegression.model -
 java cs475/Classify -mode train -algorithm logistic_regression -model_file model/hard.logisticRegression.model -data Data/hard.train 
 
 java cs475/Classify -mode test -model_file model/hard.logisticRegression.model -data DATA/hard.dev -predictions_file prediction/hard.dev.logisticRegressionPred
+

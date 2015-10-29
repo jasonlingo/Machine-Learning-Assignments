@@ -1,0 +1,264 @@
+Name: llin34
+Assignment: 2
+Date: 10/17/2015
+Total grading points: 50.00 out of 50.00
+
+
+Comments:
+-----------------------------------------------------------
+Perfect score! Good work.
+
+
+Test 1: build
+What is being tested: Code compiled without error.
+Runtime of command: 1 (seconds)
+Result: PASS
+Points: 0.00 of 0.00
+Test command: rm -rf ../submissions/llin34/code/src/__MACOSX/; javac -classpath "../submissions/llin34/code/bin:/users/cs475/libs/commons-cli-1.2.jar:/users/cs475/libs/classify_runner.jar" -d ../submissions/llin34/code/bin `find ../submissions/llin34/code/src -name '*.java'`
+Test output: None
+
+Test 2: source_code
+What is being tested: Checks for source code.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 0.00 of 0.00
+
+Test 3: logistic_regression.finance.train.train.exception.it1
+What is being tested: Run logistic_regression on finance.train, check exception.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 0.93 of 0.93
+Test command: /usr/bin/java -classpath "../submissions/llin34/code/bin:/users/cs475/libs/commons-cli-1.2.jar:/users/cs475/libs/classify_runner.jar" cs475_util.ClassifyTestHarness -timeout 1200000 -algorithm logistic_regression -mode train -model_file ../submissions/llin34/code/temp/finance.logistic_regression.model -sgd_iterations 1 -data /users/cs475/data/finance/finance.train -sgd_eta0 1.0
+Test output: For training, the accuracy is 0.705455 (388 / 550)
+
+Test 4: logistic_regression.finance.dev.test.exception.it1
+What is being tested: Run logistic_regression on finance.dev, check exception.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 0.93 of 0.93
+Test command: /usr/bin/java -classpath "../submissions/llin34/code/bin:/users/cs475/libs/commons-cli-1.2.jar:/users/cs475/libs/classify_runner.jar" cs475_util.ClassifyTestHarness -timeout 120000 -algorithm logistic_regression -mode test -model_file ../submissions/llin34/code/temp/finance.logistic_regression.model -predictions_file ../submissions/llin34/code/temp/finance.dev.predictions -data /users/cs475/data/finance/finance.dev
+Test output: For testing, the accuracy is 0.800000 (24 / 30)
+
+Test 5: logistic_regression.finance.dev.test.accuracy.it1
+What is being tested: Run logistic_regression on finance.dev, check accuracy.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 2.78 of 2.78
+Test command: /users/cs475/libs/compute_accuracy.py /users/cs475/data/finance/finance.dev ../submissions/llin34/code/temp/finance.dev.predictions
+Test output: Accuracy: 0.800000 (24/30)
+
+Test 6: logistic_regression.finance.test.test.exception.it1
+What is being tested: Run logistic_regression on finance.test, check exception.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 0.93 of 0.93
+Test command: /usr/bin/java -classpath "../submissions/llin34/code/bin:/users/cs475/libs/commons-cli-1.2.jar:/users/cs475/libs/classify_runner.jar" cs475_util.ClassifyTestHarness -timeout 120000 -algorithm logistic_regression -mode test -model_file ../submissions/llin34/code/temp/finance.logistic_regression.model -predictions_file ../submissions/llin34/code/temp/finance.test.predictions -data /users/cs475/data/finance/finance.test
+Test output: For testing, the accuracy is NaN (0 / 0)
+
+Test 7: logistic_regression.finance.test.test.accuracy.it1
+What is being tested: Run logistic_regression on finance.test, check accuracy.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 2.78 of 2.78
+Test command: /users/cs475/libs/compute_accuracy.py /users/cs475/data/finance/finance.test.with_labels ../submissions/llin34/code/temp/finance.test.predictions
+Test output: Accuracy: 0.767123 (56/73)
+
+Test 8: logistic_regression.finance.train.train.exception.it20
+What is being tested: Run logistic_regression on finance.train, check exception.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 0.93 of 0.93
+Test command: /usr/bin/java -classpath "../submissions/llin34/code/bin:/users/cs475/libs/commons-cli-1.2.jar:/users/cs475/libs/classify_runner.jar" cs475_util.ClassifyTestHarness -timeout 1200000 -algorithm logistic_regression -mode train -model_file ../submissions/llin34/code/temp/finance.logistic_regression.model -sgd_iterations 20 -data /users/cs475/data/finance/finance.train -sgd_eta0 1.0
+Test output: For training, the accuracy is 0.858182 (472 / 550)
+
+Test 9: logistic_regression.finance.dev.test.exception.it20
+What is being tested: Run logistic_regression on finance.dev, check exception.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 0.93 of 0.93
+Test command: /usr/bin/java -classpath "../submissions/llin34/code/bin:/users/cs475/libs/commons-cli-1.2.jar:/users/cs475/libs/classify_runner.jar" cs475_util.ClassifyTestHarness -timeout 120000 -algorithm logistic_regression -mode test -model_file ../submissions/llin34/code/temp/finance.logistic_regression.model -predictions_file ../submissions/llin34/code/temp/finance.dev.predictions -data /users/cs475/data/finance/finance.dev
+Test output: For testing, the accuracy is 0.900000 (27 / 30)
+
+Test 10: logistic_regression.finance.dev.test.accuracy.it20
+What is being tested: Run logistic_regression on finance.dev, check accuracy.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 2.78 of 2.78
+Test command: /users/cs475/libs/compute_accuracy.py /users/cs475/data/finance/finance.dev ../submissions/llin34/code/temp/finance.dev.predictions
+Test output: Accuracy: 0.900000 (27/30)
+
+Test 11: logistic_regression.finance.test.test.exception.it20
+What is being tested: Run logistic_regression on finance.test, check exception.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 0.93 of 0.93
+Test command: /usr/bin/java -classpath "../submissions/llin34/code/bin:/users/cs475/libs/commons-cli-1.2.jar:/users/cs475/libs/classify_runner.jar" cs475_util.ClassifyTestHarness -timeout 120000 -algorithm logistic_regression -mode test -model_file ../submissions/llin34/code/temp/finance.logistic_regression.model -predictions_file ../submissions/llin34/code/temp/finance.test.predictions -data /users/cs475/data/finance/finance.test
+Test output: For testing, the accuracy is NaN (0 / 0)
+
+Test 12: logistic_regression.finance.test.test.accuracy.it20
+What is being tested: Run logistic_regression on finance.test, check accuracy.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 2.78 of 2.78
+Test command: /users/cs475/libs/compute_accuracy.py /users/cs475/data/finance/finance.test.with_labels ../submissions/llin34/code/temp/finance.test.predictions
+Test output: Accuracy: 0.890411 (65/73)
+
+Test 13: logistic_regression.vision.train.train.exception.it1
+What is being tested: Run logistic_regression on vision.train, check exception.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 0.93 of 0.93
+Test command: /usr/bin/java -classpath "../submissions/llin34/code/bin:/users/cs475/libs/commons-cli-1.2.jar:/users/cs475/libs/classify_runner.jar" cs475_util.ClassifyTestHarness -timeout 1200000 -algorithm logistic_regression -mode train -model_file ../submissions/llin34/code/temp/vision.logistic_regression.model -sgd_iterations 1 -data /users/cs475/data/vision/vision.train -sgd_eta0 1.0
+Test output: For training, the accuracy is 0.992000 (496 / 500)
+
+Test 14: logistic_regression.vision.dev.test.exception.it1
+What is being tested: Run logistic_regression on vision.dev, check exception.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 0.93 of 0.93
+Test command: /usr/bin/java -classpath "../submissions/llin34/code/bin:/users/cs475/libs/commons-cli-1.2.jar:/users/cs475/libs/classify_runner.jar" cs475_util.ClassifyTestHarness -timeout 120000 -algorithm logistic_regression -mode test -model_file ../submissions/llin34/code/temp/vision.logistic_regression.model -predictions_file ../submissions/llin34/code/temp/vision.dev.predictions -data /users/cs475/data/vision/vision.dev
+Test output: For testing, the accuracy is 1.000000 (80 / 80)
+
+Test 15: logistic_regression.vision.dev.test.accuracy.it1
+What is being tested: Run logistic_regression on vision.dev, check accuracy.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 2.78 of 2.78
+Test command: /users/cs475/libs/compute_accuracy.py /users/cs475/data/vision/vision.dev ../submissions/llin34/code/temp/vision.dev.predictions
+Test output: Accuracy: 1.000000 (80/80)
+
+Test 16: logistic_regression.vision.test.test.exception.it1
+What is being tested: Run logistic_regression on vision.test, check exception.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 0.93 of 0.93
+Test command: /usr/bin/java -classpath "../submissions/llin34/code/bin:/users/cs475/libs/commons-cli-1.2.jar:/users/cs475/libs/classify_runner.jar" cs475_util.ClassifyTestHarness -timeout 120000 -algorithm logistic_regression -mode test -model_file ../submissions/llin34/code/temp/vision.logistic_regression.model -predictions_file ../submissions/llin34/code/temp/vision.test.predictions -data /users/cs475/data/vision/vision.test
+Test output: For testing, the accuracy is NaN (0 / 0)
+
+Test 17: logistic_regression.vision.test.test.accuracy.it1
+What is being tested: Run logistic_regression on vision.test, check accuracy.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 2.78 of 2.78
+Test command: /users/cs475/libs/compute_accuracy.py /users/cs475/data/vision/vision.test.with_labels ../submissions/llin34/code/temp/vision.test.predictions
+Test output: Accuracy: 1.000000 (80/80)
+
+Test 18: logistic_regression.vision.train.train.exception.it20
+What is being tested: Run logistic_regression on vision.train, check exception.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 0.93 of 0.93
+Test command: /usr/bin/java -classpath "../submissions/llin34/code/bin:/users/cs475/libs/commons-cli-1.2.jar:/users/cs475/libs/classify_runner.jar" cs475_util.ClassifyTestHarness -timeout 1200000 -algorithm logistic_regression -mode train -model_file ../submissions/llin34/code/temp/vision.logistic_regression.model -sgd_iterations 20 -data /users/cs475/data/vision/vision.train -sgd_eta0 1.0
+Test output: For training, the accuracy is 1.000000 (500 / 500)
+
+Test 19: logistic_regression.vision.dev.test.exception.it20
+What is being tested: Run logistic_regression on vision.dev, check exception.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 0.93 of 0.93
+Test command: /usr/bin/java -classpath "../submissions/llin34/code/bin:/users/cs475/libs/commons-cli-1.2.jar:/users/cs475/libs/classify_runner.jar" cs475_util.ClassifyTestHarness -timeout 120000 -algorithm logistic_regression -mode test -model_file ../submissions/llin34/code/temp/vision.logistic_regression.model -predictions_file ../submissions/llin34/code/temp/vision.dev.predictions -data /users/cs475/data/vision/vision.dev
+Test output: For testing, the accuracy is 0.987500 (79 / 80)
+
+Test 20: logistic_regression.vision.dev.test.accuracy.it20
+What is being tested: Run logistic_regression on vision.dev, check accuracy.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 2.78 of 2.78
+Test command: /users/cs475/libs/compute_accuracy.py /users/cs475/data/vision/vision.dev ../submissions/llin34/code/temp/vision.dev.predictions
+Test output: Accuracy: 0.987500 (79/80)
+
+Test 21: logistic_regression.vision.test.test.exception.it20
+What is being tested: Run logistic_regression on vision.test, check exception.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 0.93 of 0.93
+Test command: /usr/bin/java -classpath "../submissions/llin34/code/bin:/users/cs475/libs/commons-cli-1.2.jar:/users/cs475/libs/classify_runner.jar" cs475_util.ClassifyTestHarness -timeout 120000 -algorithm logistic_regression -mode test -model_file ../submissions/llin34/code/temp/vision.logistic_regression.model -predictions_file ../submissions/llin34/code/temp/vision.test.predictions -data /users/cs475/data/vision/vision.test
+Test output: For testing, the accuracy is NaN (0 / 0)
+
+Test 22: logistic_regression.vision.test.test.accuracy.it20
+What is being tested: Run logistic_regression on vision.test, check accuracy.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 2.78 of 2.78
+Test command: /users/cs475/libs/compute_accuracy.py /users/cs475/data/vision/vision.test.with_labels ../submissions/llin34/code/temp/vision.test.predictions
+Test output: Accuracy: 1.000000 (80/80)
+
+Test 23: logistic_regression.bio.train.train.exception.it1
+What is being tested: Run logistic_regression on bio.train, check exception.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 0.93 of 0.93
+Test command: /usr/bin/java -classpath "../submissions/llin34/code/bin:/users/cs475/libs/commons-cli-1.2.jar:/users/cs475/libs/classify_runner.jar" cs475_util.ClassifyTestHarness -timeout 1200000 -algorithm logistic_regression -mode train -model_file ../submissions/llin34/code/temp/bio.logistic_regression.model -sgd_iterations 1 -data /users/cs475/data/bio/bio.train -sgd_eta0 1.0
+Test output: For training, the accuracy is 0.976500 (1953 / 2000)
+
+Test 24: logistic_regression.bio.dev.test.exception.it1
+What is being tested: Run logistic_regression on bio.dev, check exception.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 0.93 of 0.93
+Test command: /usr/bin/java -classpath "../submissions/llin34/code/bin:/users/cs475/libs/commons-cli-1.2.jar:/users/cs475/libs/classify_runner.jar" cs475_util.ClassifyTestHarness -timeout 120000 -algorithm logistic_regression -mode test -model_file ../submissions/llin34/code/temp/bio.logistic_regression.model -predictions_file ../submissions/llin34/code/temp/bio.dev.predictions -data /users/cs475/data/bio/bio.dev
+Test output: For testing, the accuracy is 0.975000 (195 / 200)
+
+Test 25: logistic_regression.bio.dev.test.accuracy.it1
+What is being tested: Run logistic_regression on bio.dev, check accuracy.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 2.78 of 2.78
+Test command: /users/cs475/libs/compute_accuracy.py /users/cs475/data/bio/bio.dev ../submissions/llin34/code/temp/bio.dev.predictions
+Test output: Accuracy: 0.975000 (195/200)
+
+Test 26: logistic_regression.bio.test.test.exception.it1
+What is being tested: Run logistic_regression on bio.test, check exception.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 0.93 of 0.93
+Test command: /usr/bin/java -classpath "../submissions/llin34/code/bin:/users/cs475/libs/commons-cli-1.2.jar:/users/cs475/libs/classify_runner.jar" cs475_util.ClassifyTestHarness -timeout 120000 -algorithm logistic_regression -mode test -model_file ../submissions/llin34/code/temp/bio.logistic_regression.model -predictions_file ../submissions/llin34/code/temp/bio.test.predictions -data /users/cs475/data/bio/bio.test
+Test output: For testing, the accuracy is NaN (0 / 0)
+
+Test 27: logistic_regression.bio.test.test.accuracy.it1
+What is being tested: Run logistic_regression on bio.test, check accuracy.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 2.78 of 2.78
+Test command: /users/cs475/libs/compute_accuracy.py /users/cs475/data/bio/bio.test.with_labels ../submissions/llin34/code/temp/bio.test.predictions
+Test output: Accuracy: 0.959459 (213/222)
+
+Test 28: logistic_regression.bio.train.train.exception.it20
+What is being tested: Run logistic_regression on bio.train, check exception.
+Runtime of command: 1 (seconds)
+Result: PASS
+Points: 0.93 of 0.93
+Test command: /usr/bin/java -classpath "../submissions/llin34/code/bin:/users/cs475/libs/commons-cli-1.2.jar:/users/cs475/libs/classify_runner.jar" cs475_util.ClassifyTestHarness -timeout 1200000 -algorithm logistic_regression -mode train -model_file ../submissions/llin34/code/temp/bio.logistic_regression.model -sgd_iterations 20 -data /users/cs475/data/bio/bio.train -sgd_eta0 1.0
+Test output: For training, the accuracy is 1.000000 (2000 / 2000)
+
+Test 29: logistic_regression.bio.dev.test.exception.it20
+What is being tested: Run logistic_regression on bio.dev, check exception.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 0.93 of 0.93
+Test command: /usr/bin/java -classpath "../submissions/llin34/code/bin:/users/cs475/libs/commons-cli-1.2.jar:/users/cs475/libs/classify_runner.jar" cs475_util.ClassifyTestHarness -timeout 120000 -algorithm logistic_regression -mode test -model_file ../submissions/llin34/code/temp/bio.logistic_regression.model -predictions_file ../submissions/llin34/code/temp/bio.dev.predictions -data /users/cs475/data/bio/bio.dev
+Test output: For testing, the accuracy is 0.970000 (194 / 200)
+
+Test 30: logistic_regression.bio.dev.test.accuracy.it20
+What is being tested: Run logistic_regression on bio.dev, check accuracy.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 2.78 of 2.78
+Test command: /users/cs475/libs/compute_accuracy.py /users/cs475/data/bio/bio.dev ../submissions/llin34/code/temp/bio.dev.predictions
+Test output: Accuracy: 0.970000 (194/200)
+
+Test 31: logistic_regression.bio.test.test.exception.it20
+What is being tested: Run logistic_regression on bio.test, check exception.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 0.93 of 0.93
+Test command: /usr/bin/java -classpath "../submissions/llin34/code/bin:/users/cs475/libs/commons-cli-1.2.jar:/users/cs475/libs/classify_runner.jar" cs475_util.ClassifyTestHarness -timeout 120000 -algorithm logistic_regression -mode test -model_file ../submissions/llin34/code/temp/bio.logistic_regression.model -predictions_file ../submissions/llin34/code/temp/bio.test.predictions -data /users/cs475/data/bio/bio.test
+Test output: For testing, the accuracy is NaN (0 / 0)
+
+Test 32: logistic_regression.bio.test.test.accuracy.it20
+What is being tested: Run logistic_regression on bio.test, check accuracy.
+Runtime of command: 0 (seconds)
+Result: PASS
+Points: 2.78 of 2.78
+Test command: /users/cs475/libs/compute_accuracy.py /users/cs475/data/bio/bio.test.with_labels ../submissions/llin34/code/temp/bio.test.predictions
+Test output: Accuracy: 0.981982 (218/222)
