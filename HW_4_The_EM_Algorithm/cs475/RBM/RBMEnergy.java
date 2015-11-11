@@ -29,7 +29,7 @@ public class RBMEnergy {
 
 	public void learning() {
 		// TODO: Add code here
-		System.out.println("Start learnign===========================");
+//		System.out.println("Start learnign===========================");
 		// initialize parameters
 		initialize();
 

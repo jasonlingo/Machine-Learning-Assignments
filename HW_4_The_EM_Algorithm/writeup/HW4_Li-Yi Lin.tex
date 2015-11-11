@@ -1,0 +1,192 @@
+\documentclass[11pt]{article}
+
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{url}
+\usepackage{wrapfig}
+\usepackage{color}
+\usepackage{marvosym}
+\usepackage{enumerate}
+\usepackage{subfigure}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{epstopdf}
+
+
+
+\oddsidemargin 0mm
+\evensidemargin 5mm
+\topmargin -20mm
+\textheight 240mm
+\textwidth 160mm
+
+
+
+\newcommand{\vwi}{{\bf w}_i}
+\newcommand{\vw}{{\bf w}}
+\newcommand{\vx}{{\bf x}}
+\newcommand{\vy}{{\bf y}}
+\newcommand{\vh}{{\bf h}}
+\newcommand{\vb}{{\bf b}}
+\newcommand{\vd}{{\bf d}}
+\newcommand{\vxi}{{\bf x}_i}
+\newcommand{\yi}{y_i}
+\newcommand{\vxj}{{\bf x}_j}
+\newcommand{\vxn}{{\bf x}_n}
+\newcommand{\yj}{y_j}
+\newcommand{\ai}{\alpha_i}
+\newcommand{\aj}{\alpha_j}
+\newcommand{\W}{{\bf W}}
+\newcommand{\X}{{\bf X}}
+\newcommand{\Y}{{\bf Y}}
+\newcommand{\vz}{{\bf z}}
+\newcommand{\msigma}{{\bf \Sigma}}
+\newcommand{\vmu}{{\bf \mu}}
+\newcommand{\vmuk}{{\bf \mu}_k}
+\newcommand{\msigmak}{{\bf \Sigma}_k}
+\newcommand{\vmuj}{{\bf \mu}_j}
+\newcommand{\msigmaj}{{\bf \Sigma}_j}
+\newcommand{\pij}{\pi_j}
+\newcommand{\pik}{\pi_k}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\el}{\mathcal{L}}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\vxij}{{\bf x}_{ij}}
+\newcommand{\vt}{{\bf t}}
+\newcommand{\yh}{\hat{y}}
+\newcommand{\code}[1]{{\footnotesize \tt #1}}
+\newcommand{\alphai}{\alpha_i}
+
+\pagestyle{myheadings}
+\markboth{Homework 4}{Fall 2015 CS 475 Machine Learning: Homework 4}
+
+
+\title{CS 475 Machine Learning: Homework 4\\The EM Algorithm (and more)\\
+\Large{Due: Monday November 9, 2015, 11:59pm}\\
+100 Points Total \hspace{1cm} Version 1.0}
+\author{Li-Yi Lin / llin34@jhu.edu\\}
+\date{}
+
+\begin{document}
+\large
+\maketitle
+\thispagestyle{headings}
+
+\section{Analytical Questions (40 points)}
+
+\paragraph{1. Overfitting in Clustering (10 points)}
+
+Given the data set $x_1,...,x_n$, we want to do clustering by the K-means algorithm. The K-means algorithm aims to partition the $n$ observations into $k$ sets ($k < n$) $S = \{S_1, S_2, ... , S_k\}$ so as to minimize the within-cluster sum of squares
+\begin{eqnarray*}
+\mathop{\textrm{min}}_{S=\{S_1,...,S_k\}}\sum_{j=1}^k\sum_{x_i\in S_j}\|x_j-\mu_j\|_2^2
+\end{eqnarray*}
+
+\begin{enumerate}[(a)]
+\item Prove that the objective value does not increase in each iteration of the K-means algorithm.\\
+\textbf{Ans:}\\
+We first prove that, in each iteration, using $\mu_j$ as the center of each cluster will minimize the objective value. To prove that, we perform partial derivative on each $\mu_j$ and set it equal to 0. Then we find the answer of $\mu_j$.\\
+$$\frac{\partial \sum_{x_i \in S_j}\|x_i-\mu_j\|_2^2}{\partial \mu_j} = \sum_{x_i \in S_j}-2 \|x_i-\mu_j\| =0$$
+$$\sum_{x_i \in S_j}-2 \|x_i-\mu_j\| = \sum_{x_i \in S_j}-2 x_i - \sum_{x_i \in S_j}-2 \mu_j = 0$$
+$$\sum_{x_i \in S_j}x_i = \sum_{x_i \in S_j}\mu_j$$
+We assume there are $n_j$ elements in $S_j$.
+$$\sum_{x_i \in S_j}x_i = \sum_{x_i \in S_j}\mu_j = n_j\mu_j$$
+$$\mu_j = \frac{\sum_{x_i \in S_j}x_i}{n_j}$$
+So we know that when $\mu_j$ is the mean of points in $S_j$, the object value will be minimized since the sum of squares error of each cluster is minimized.\\
+Once we have updated the center, $\mu_j$ of each cluster, we reassign $x_1,..., x_n$ to the new nearest cluster respectively. The new sum of square error will be less than or equal to that of using the old cluster assignments, namely,
+$$\|x_i - \mu_\text{new assigned cluster center}\|_2^2 \leq \|x_i-\mu_\text{original assigned cluster center}\|_2^2$$
+Therefore, by doing the two steps in every iteration, the objective value does not increase in each iteration.
+
+\item Let $\gamma_k$ denote the global optimal objective value, prove $\gamma_k$ is non-increasing in $k$.\\
+\textbf{Ans:}\\
+Assume we now have $k$ clusters and it is at the optimal solution having object value $\gamma_k$. Then we add another cluster and perform the k-means algorithm to adjust the $k+1$ clusters. By the proof given in (1), we know that the object value doesn't increase in each iteration. Therefore, when we found the optimal solution for $k+1$ clusters, $\gamma_k \leq \gamma_{k+1}$. Thus, we have proved that $\gamma_k$ is non-increase in $k$.
+
+\end{enumerate}
+
+\paragraph{2. Curse-of-dimensionality (10 points)}
+In this problem, we study why $K$-NN could fail in high dimensions by means of a very simple example. Consider a sphere of radius $r$ in $d$-dimensions together with a concentric hypercube of side $2r$. The sphere touches the hypercube at the center of each of its sides.
+
+\begin{enumerate}[(a)]
+\item $V_c$ is the volume of the cube and $V_s$ is the volume of the sphere, where the volume of a $d$-dimensional sphere with radius $r$ is given as 
+\begin{eqnarray}
+V_s = \frac{r^d\sqrt{\pi}^d}{\Gamma(d/2+1)}, \nonumber
+\end{eqnarray}
+where $\Gamma(z)=\int_0^{\infty}t^{z-1}e^{-t}\textrm{d}t$.  Note that $\Gamma(z) = (z-1)!$ (the factorial of $z-1$) if $z$ is a positive integer.  Please show that: 
+\begin{eqnarray}
+\lim_{d\rightarrow\infty}\frac{V_s}{V_c} = 0
+\label{CoD}
+\end{eqnarray}
+
+Note that this relies on algebra and will not require any complex calculus (just some basic facts on limits). You may find the following limit useful:
+\begin{eqnarray}
+\lim_{z\rightarrow\infty}\frac{\Gamma(z+1)}{\sqrt{2\pi z}e^{-z}z^z}=1 \nonumber
+\end{eqnarray}
+\textbf{Ans:}\\
+\begin{eqnarray}
+\lim_{d\rightarrow\infty}\frac{V_s}{V_c} = 
+\lim_{d \rightarrow\infty}\frac{r^d\sqrt{\pi}^d}{\Gamma(d/2+1)(2r)^d} =
+\lim_{d \rightarrow\infty}\frac{\sqrt{\pi}^d}{\Gamma(d/2+1)2^d} \nonumber
+\end{eqnarray}
+%%%%%%%%%%%%%%%%
+Let $2z = d$
+\begin{eqnarray}
+\lim_{d \rightarrow\infty}\frac{\sqrt{\pi}^d}{\Gamma(d/2+1)2^d} = 
+\lim_{2z \rightarrow\infty}\frac{\pi^z}{\Gamma(z+1)2^{2z}} \nonumber
+\end{eqnarray}
+We knew that when $z \rightarrow \infty$, $\Gamma(z+1) \rightarrow \sqrt{2\pi z}e^{-z}z^z$. We can substitute this into the above equation. 
+\begin{eqnarray}
+\lim_{2z \rightarrow\infty}\frac{\pi^z}{\Gamma(z+1)2^{2z}} = 
+\lim_{2z \rightarrow\infty}\frac{\pi^z}{\sqrt{2\pi z}e^{-z}z^z2^{2z}} = 
+\lim_{2z \rightarrow\infty}\frac{\sqrt{\pi^{2z}}}{\sqrt{2\pi z}\sqrt{(2(2z)e^{-1})^{2z}}}
+\nonumber
+\end{eqnarray}
+% Since $\pi^{2z} << (2(2z)e^{-1})^{2z}$ when $2z \rightarrow \infty$, we have proved that
+Since $\lim_{2z\rightarrow \infty} \frac{\pi^{2z}}{(2(2z)e^{-1})^{2z}}=0$, we have
+\begin{eqnarray}
+\lim_{d\rightarrow\infty}\frac{V_s}{V_c} =
+\lim_{2z \rightarrow\infty}\frac{\sqrt{\pi^{2z}}}{\sqrt{2\pi z}\sqrt{(2(2z)e^{-1})^{2z}}} = 0
+\nonumber
+\end{eqnarray}
+
+\item What is the connection between \eqref{CoD} and the curse of dimensionality?\\
+\textbf{Ans:}\\
+The ratio of the volume of sphere devided by the volume of cube is decreasing to zero as the dimentionality is getting larger and larger to infinity. That means if we randomly choose points in high dimentional space, they will likely be equidistant from each other, making it difficult to perform classification task.
+\end{enumerate}
+
+\paragraph{3. Semi-supervised EM algorithm (10 points)}
+Suppose that some of your observed data are labelled. You have $x_1,...,x_n\in\mathbb{R}^{d}$ and $x_{n+1},...,x_{n+m}$. Meanwhile, you also know the labels corresponding to $x_{n+1},...,x_{n+m}$, i.e., $y_{n+1},...,y_{n+m}\in\{1,...,K\}$, where K is the number of clusters. Please design a Gaussian Mixture Model-based EM algorithm to cluster the data. [Hint: For $x_{n+1},...,x_{n+m}$, the corresponding labels are no longer missing values]
+\begin{enumerate}[(a)]
+\item Write the new likelihood objective for this new algorithm.\\
+\textbf{Ans:}
+\begin{eqnarray}
+p(\textbf{X, Z}|\theta) = \prod_{i=1}^{n}\prod_{k=1}^{K}\pi_k^{z_{nk}}\mathcal(N)(x_i|\mu_k, \Sigma_k)^{z_{ik}}\prod_{i=n+1}^{m}\mathcal{N}(x_i|\mu_{k=y_i}, \Sigma_{k=y_i})
+\nonumber
+\end{eqnarray}
+
+\item Write the new update rules in each iteration.\\
+\textbf{Ans:}\\
+% In the E-step, we will maximize the $\mathcal{L}(q,\theta)$ by using both the labelled and unlabelled data with respect to $q(\textbf{Z})$ by keeping $\theta$ constant. In the M-step, we will maximize the $\mathcal{L}(q, \theta)$ by only updating $\theta_i$ using the unlabelled data and holding $q(\textbf{Z})$ fixed.
+In E-step, we will use both the labelled and unlabelled data for updating, but only update the label of the unlabelled data. In the M-step, we also use both the labelled and unlabelled data for updating the $\theta$.
+
+
+\end{enumerate}
+
+\paragraph{4. Modified EM (10 points)}
+The EM algorithm we learned about in class is just one of several different general EM algorithms, all with similar goals and structures.  In this problem we will consider an alternative EM algorithm which modifies the M-step. Instead of maximizing $\mathcal{L}(q,\theta)$ with respect to $\theta$, the algorithm selects a single parameters $\theta_i \in \theta$ and modifies
+it to increase $\mathcal{L}(q,\theta)$.
+
+\begin{enumerate}[(a)]
+\item Will this new EM algorithm yield the same solution as the normal EM algorithm?\\
+\textbf{Ans:}\\
+The new EM algorithm will not necessarily yield the same solution as the normal EM algorithm. The resaon is that it might find another local optimal due to the difference in the updating of the parameters. 
+
+\item Will this new EM algorithm converge (assuming lack of singularities)? If yes, then prove convergence. If no, then give a counterexample illustrating why not.\\
+\textbf{Ans:}\\
+The new EM algorithm will still converge because, in the E-step, it will try to make $q(Z)$ close to $p(Z|x, \theta)$ by adjusting the chosen $\theta_i$. By doing so, $\mathcal{L}(q, \theta)$ will be increased. In the M-step, it will try to maximize the $\mathcal{L}$ with respect to the new $\theta$ (with $\theta_i$ updated). So in each iteration, the log likelihood is a non-descresing function. In addition, if we assume there is a solution for the problem, then the likelihood will be bounded. Thus, because the log likelihood is non-descresing and bounded, it will converge.  
+
+\end{enumerate}
+
+
+
+\end{document}
