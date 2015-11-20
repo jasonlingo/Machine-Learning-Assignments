@@ -36,15 +36,18 @@ public class LoopyBP {
 		}
 	}
 
+	/**
+	 * compute the marginal probability of x_i (k-ary array)
+	 * The marginal probability of x_i is the product of all the
+	 * message coming into x_i.
+	 * @param x_i
+	 * @return
+     */
 	public double[] marginalProbability(int x_i) {
 		// TODO
 		double[] probX = new double[k + 1];
 
 		for (int x = 1; x <= k; x++){
-//			System.out.println("Marginal prob");
-//			System.out.println(muFtoX[n + x_i][x_i][x]);
-//			System.out.println(muFtoX[n + 1 + (x_i - 2 + n) % n][x_i][x]);
-//			System.out.println(this.potentials.potential(x_i, x));
 			probX[x] = muFtoX[n + x_i][x_i][x] * muFtoX[n + 1 + (x_i - 2 + n) % n][x_i][x] * this.potentials.potential(x_i, x);
 		}
 
@@ -61,60 +64,49 @@ public class LoopyBP {
 		return probX;
 	}
 
+	/**
+	 * Update message for the given iteration.
+	 */
 	private void computeMessage(){
 		for (int t = 1; t <= this.iterations; t++) {
-			System.out.printf("\n===== %d-th iteration =====", t);
-
 			for (int i = 1; i <= n; i++) {
-				computeFtoX(n + i, 1 + i % n);
+				computeFtoX(n + i, 1 + i % n, false);
 				computeXtoF(1 + i % n, n + 1 + i % n);
 			}
-			System.out.println("\n======== reverse ========");
 			for (int i = n; i >= 1; i--) {
-				computeFtoXR(n + i, i);
-				computeXtoFR(i, n + 1 + (i - 2 + n) % n);
+				computeFtoX(n + i, i, true);
+				computeXtoF(i, n + 1 + (i - 2 + n) % n);
 			}
 		}
 	}
 
-
-	private void computeFtoX(int fi, int xi){
-		System.out.printf("\n\nmu_{f%d -> x%d} += ", fi, xi);
-
+	/**
+	 * Update message mu_{fi -> xi}
+	 * @param fi
+	 * @param xi
+	 * @param reverse
+     */
+	private void computeFtoX(int fi, int xi, Boolean reverse){
 		ArrayList<Integer> ne = neighborF(fi, xi);
 
 		for (int x = 1; x <= k; x++){ // target xi
 			double result = 0.0;
 			for (int xf = 1; xf <= k; xf++){ //
-//				if (fi == 2 * n)
+				if (!reverse)
 					result += this.potentials.potential(fi, xf, x) * muXtoF[ne.get(0)][fi][xf];
-//				else
-//					result += this.potentials.potential(fi, x, xf) * muXtoF[ne.get(0)][fi][xf];
-			}
-			muFtoX[fi][xi][x] = result;
-		}
-	}
-
-	private void computeFtoXR(int fi, int xi){
-		System.out.printf("\n\nmu_{f%d -> x%d} += ", fi, xi);
-
-		ArrayList<Integer> ne = neighborF(fi, xi);
-
-		for (int x = 1; x <= k; x++){ // target xi
-			double result = 0.0;
-			for (int xf = 1; xf <= k; xf++){ //
-//				if (fi == 2 * n)
+				else
 					result += this.potentials.potential(fi, x, xf) * muXtoF[ne.get(0)][fi][xf];
-//				else
-//					result += this.potentials.potential(fi, x, xf) * muXtoF[ne.get(0)][fi][xf];
 			}
 			muFtoX[fi][xi][x] = result;
 		}
 	}
 
+	/**
+	 * Update message mu_{xi -> fi}
+	 * @param xi
+	 * @param fi
+     */
 	private void computeXtoF(int xi, int fi){
-		System.out.printf("\n\nmu_{x%d -> f%d} += ", xi, fi);
-
 		ArrayList<Integer> ne = neighborX(xi, fi);
 
 		for (int x = 1; x <= k; x++){
@@ -129,23 +121,12 @@ public class LoopyBP {
 		}
 	}
 
-	private void computeXtoFR(int xi, int fi){
-		System.out.printf("\n\nmu_{x%d -> f%d} += ", xi, fi);
-
-		ArrayList<Integer> ne = neighborX(xi, fi);
-
-		for (int x = 1; x <= k; x++){
-			double result = 1.0;
-			for (int f: ne){
-				if (f == xi)
-					result *= this.potentials.potential(xi, x);
-				else
-					result *= muFtoX[f][xi][x];
-			}
-			muXtoF[xi][fi][x] = result;
-		}
-	}
-
+	/**
+	 * Find the neighbor of xi except the "except" factor node.
+	 * @param xi
+	 * @param except: exclude this factor node
+     * @return: an ArrayList of neighbor indices (fi)
+     */
 	private ArrayList<Integer> neighborX(int xi, int except){
 		ArrayList<Integer> neighbor = new ArrayList<>();
 		neighbor.add(xi);
@@ -163,7 +144,13 @@ public class LoopyBP {
 
 		return neighbor;
 	}
-
+	
+	/**
+	 * Find the neighbor of fi except the "except" variable.
+	 * @param fi
+	 * @param except: exclude this variable
+     * @return an ArrayList of neighbor indices (xi).
+     */
 	private ArrayList<Integer> neighborF(int fi, int except){
 		ArrayList<Integer> neighbor = new ArrayList<>();
 		if (except != fi - n)
