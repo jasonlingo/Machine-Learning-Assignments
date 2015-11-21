@@ -25,7 +25,7 @@
       <file leaf-file-name="LoopyBP.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/cs475/loopMRF/LoopyBP.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.287902">
+            <state vertical-scroll-proportion="0.53409094">
               <caret line="146" column="4" selection-start-line="146" selection-start-column="4" selection-end-line="146" selection-end-column="4" />
               <folding />
             </state>
@@ -601,12 +601,7 @@
       </breakpoints>
       <option name="time" value="39" />
     </breakpoint-manager>
-    <watches-manager>
-      <configuration name="Application">
-        <watch expression="((LoopyBP)this).muXtoF" custom="cs475.loopMRF.LoopyBP" />
-        <watch expression="((LoopyBP)this).muFtoX" custom="cs475.loopMRF.LoopyBP" />
-      </configuration>
-    </watches-manager>
+    <watches-manager />
   </component>
   <component name="antWorkspaceConfiguration">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
@@ -639,7 +634,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/cs475/loopMRF/LoopyBP.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.287902">
+        <state vertical-scroll-proportion="0.53409094">
           <caret line="146" column="4" selection-start-line="146" selection-start-column="4" selection-end-line="146" selection-end-column="4" />
           <folding />
         </state>

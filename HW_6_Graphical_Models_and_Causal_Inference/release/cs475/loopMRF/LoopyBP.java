@@ -144,7 +144,7 @@ public class LoopyBP {
 
 		return neighbor;
 	}
-
+	
 	/**
 	 * Find the neighbor of fi except the "except" variable.
 	 * @param fi
