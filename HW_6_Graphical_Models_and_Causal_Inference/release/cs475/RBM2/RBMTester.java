@@ -1,13 +1,11 @@
 //NOTE: Do not modify this file
 package cs475.RBM2;
-import java.util.LinkedList;
-
+import cs475.Classify;
+import cs475.CommandLineUtilities;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 
-import cs475.Classify;
-import cs475.CommandLineUtilities;
-import cs475.RBM2.*;
+import java.util.LinkedList;
 
 
 public class RBMTester {

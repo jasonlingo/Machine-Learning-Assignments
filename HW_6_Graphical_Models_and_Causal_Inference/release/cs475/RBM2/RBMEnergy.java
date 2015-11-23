@@ -14,8 +14,6 @@ public class RBMEnergy {
 	private int[][] h;    // hidden variables
 	private Random rand;
 
-
-
 	public RBMEnergy(RBMParameters parameters, int numSamples) {
 		this.parameters = parameters;
 		this.num_samples = numSamples;
@@ -65,7 +63,7 @@ public class RBMEnergy {
 	}
 
 	/**
-	 * compute the value of x^TW + dj using x from sample t-1
+	 * Compute the value of x^TW + dj using x from sample t-1
 	 * @param t: identify the t-th sample
 	 * @param j: the index of h
      * @return: the value of x^TW + dj
@@ -81,7 +79,7 @@ public class RBMEnergy {
 	}
 
 	/**
-	 * compute the value of h^TW^T + bi using h from sample t
+	 * Compute the value of h^TW^T + bi using h from sample t
 	 * @param t: identify the t-th sample
 	 * @param i: the index of x
      * @return: the value of h^TW^T + bi
@@ -96,7 +94,6 @@ public class RBMEnergy {
 		return result;
 	}
 
-
 	/**
 	 * To compute the margin probability of hj, we will count the
 	 * number of hj = 1 in the all samples divided by the total number
@@ -104,7 +101,6 @@ public class RBMEnergy {
 	 *             number of samples that hj = 1
 	 * p(hj = 1) = -----------------------------
 	 *                total number of samples
-	 *
 	 * @param j
 	 * @return
      */
