@@ -61,7 +61,7 @@ testLabel = label[num:num+1000]
 correct = 0
 for i in range(len(testData)):
     if i % 100 == 0:
-        print "."
+        print ".",
     # print testLabel[i], clf.predict(np.array(testData[i], 'float64'))
     if np.array(testLabel[i], 'int') == clf.predict(np.array(testData[i], 'float64')):
         correct += 1

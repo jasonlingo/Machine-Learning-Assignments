@@ -1,0 +1,550 @@
+\documentclass[11pt]{article}
+
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{url}
+\usepackage{wrapfig}
+\usepackage{color}
+\usepackage{marvosym}
+\usepackage{enumerate}
+\usepackage{subfigure}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref} 
+
+
+\oddsidemargin 0mm
+\evensidemargin 5mm
+\topmargin -20mm
+\textheight 240mm
+\textwidth 160mm
+
+
+
+
+\newcommand{\vw}{{\bf w}}
+\newcommand{\vx}{{\bf x}}
+\newcommand{\vy}{{\bf y}}
+\newcommand{\vxi}{{\bf x}_i}
+\newcommand{\yi}{y_i}
+\newcommand{\vxj}{{\bf x}_j}
+\newcommand{\vxn}{{\bf x}_n}
+\newcommand{\yj}{y_j}
+\newcommand{\ai}{\alpha_i}
+\newcommand{\aj}{\alpha_j}
+\newcommand{\X}{{\bf X}}
+\newcommand{\Y}{{\bf Y}}
+\newcommand{\vz}{{\bf z}}
+\newcommand{\msigma}{{\bf \Sigma}}
+\newcommand{\vmu}{{\bf \mu}}
+\newcommand{\vmuk}{{\bf \mu}_k}
+\newcommand{\msigmak}{{\bf \Sigma}_k}
+\newcommand{\vmuj}{{\bf \mu}_j}
+\newcommand{\msigmaj}{{\bf \Sigma}_j}
+\newcommand{\pij}{\pi_j}
+\newcommand{\pik}{\pi_k}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\el}{\mathcal{L}}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\vxij}{{\bf x}_{ij}}
+\newcommand{\vt}{{\bf t}}
+\newcommand{\yh}{\hat{y}}
+\newcommand{\code}[1]{{\footnotesize \tt #1}}
+\newcommand{\alphai}{\alpha_i}
+
+
+
+\pagestyle{myheadings}
+\markboth{Homework 5}{Fall 2015 CS 475 Machine Learning: Homework 5}
+
+
+\title{CS 475 Machine Learning: Homework 5\\Graphical Models\\
+\Large{Due: Tuesday November 24, 2015, 11:59pm}\\
+100 Points Total \hspace{1cm} Version 1.0}
+\author{Li-Yi Lin / llin34@jhu.edu}
+\date{}
+
+\begin{document}
+\large
+\maketitle
+\thispagestyle{headings}
+
+
+% \section{Programming (60 points)}
+% In this assignment you will implement a loopy belief propagation (BP) algorithm for calculating marginal probabilities in a loopy MRF (more specifically, a factor graph). You will implement loopy belief propagation using provided functions for each factor
+% (there is no learning in the homework, only inference). As background, we first summarize inference on a linear chain factor graph using message passing (sum product.) We will then explain how this algorithm can be adapted to a loopy graph
+% structure. Since this new structure is not a DAG, we no longer have a guarantee that we will get the correct answer. Therefore, loopy BP is an approximate inference algorithm. 
+
+% \subsection{Message Passing on a Chain Factor Graph}
+% In this section we briefly introduce the sum product algorithm on a chain factor graph for computing the marginal of each variable on the chain.
+
+% \newcommand{\factorsize}{1}
+% \newcommand{\nodesize}{1.3}
+% \begin{figure}[h]
+% 	\begin{center}
+% \begin{tikzpicture}[style=thick,scale=1]
+% 			\begin{scope}[shape=circle,minimum size=0.1cm]
+% 			\tikzstyle{every node}=[draw,fill]
+% 			\node[fill=red,scale= \factorsize,shape=rectangle] (F_1) at (0,1.5) {$\mathbf{f_{1}}$};
+% 			\node[fill=none,scale=\nodesize] (X_1) at (0,0) {$\mathbf{X_1}$};
+% 			\node[fill=red,scale= \factorsize,shape=rectangle] (F_N1) at (2,0) {$\mathbf{f_{n+1}}$};
+% 			\node[fill=red,scale= \factorsize,shape=rectangle] (F_2) at (4,1.5) {$\mathbf{f_{2}}$};
+% 			\node[fill=none,scale=\nodesize] (X_2) at (4,0) {$\mathbf{X_2}$};
+% 			\node[fill=red,scale= \factorsize,shape=rectangle] (F_N2) at (6,0) {$\mathbf{f_{n+2}}$};
+% 			\node[fill=red,scale= \factorsize,shape=rectangle] (F_3) at (8,1.5) {$\mathbf{f_{\ldots}}$};
+% 			\node[fill=none,scale=\nodesize] (X_3) at (8,0) {$\mathbf{...}$};
+% 			\node[fill=red,scale= \factorsize,shape=rectangle] (F_N3) at (10,0) {$\mathbf{f_{2n-1}}$};
+% 			\node[fill=red,scale= \factorsize,shape=rectangle] (F_4) at (12,1.5) {$\mathbf{f_{n}}$};
+% 			\node[fill=none,scale=\nodesize] (X_4) at (12,0) {$\mathbf{X_n}$};
+% 			\draw [-] (X_1) -- (F_1);
+% 			\draw [-] (X_2) -- (F_2);
+% 			\draw [-] (X_3) -- (F_3);
+% 			\draw [-] (X_4) -- (F_4);
+% 			\draw [-] (X_1) -- (F_N1);
+% 			\draw [-] (F_N1) -- (X_2);
+% 			\draw [-] (X_2) -- (F_N2);
+% 			\draw [-] (F_N2) -- (X_3);
+% 			\draw [-] (X_3) -- (F_N3);
+% 			\draw [-] (F_N3) -- (X_4);
+% 			\end{scope}
+% 		\end{tikzpicture}
+% 		\caption{The chain factor graph.}
+% 			\label{fig:factor_graph}
+% 		\end{center}
+% \end{figure}
+% Each of the variables in our chain (the $x_i$) are $k$-ary discrete variables.
+
+% We can compute the marginal probabilities for each $x_i$ in this chain using the sum product algorithm. We review the algorithm here. Our presentation is 
+% adapted from section 8.4.4 of Bishop. For more details see the book (\href{http://research.microsoft.com/en-us/um/people/cmbishop/prml/Bishop-PRML-sample.pdf}{http://research.microsoft.com/en-us/um/people/cmbishop/prml/Bishop-PRML-sample.pdf}).
+
+% Our goal is to find the marginal probability of a node in the factor graph. Due to the linear structure of the factor graph, the sum product algorithm lets us write this marginal probability as:
+% \begin{equation}
+% \label{eq:sum-product}
+% 	p(x) = \prod_{s \in N(x)} \Bigg[ \sum_{X_s} F_s(x, X_s) \Bigg]
+% \end{equation}
+% where:\\
+% \indent $N(x)$ is the set of all factor node neighbors of $x$\\
+% \indent $F_s(x, X_s)$ represents the product of all the factors ``downstream" of $f_s$\\
+% \\
+% Part of the above equation will be used many times, so for the sake of computation and intuition, we will define the sum term as a ``message" $\mu$:
+% \begin{equation}
+% \label{eq:f2x}
+% 	\mu_{f_s \rightarrow x}(x) := \sum_{X_s} F_s(x, X_s)
+% \end{equation}
+% Messages can be defined using recursion: $F_s(x, X_s)=f_s(x,x_1,\ldots,x_M) \prod\limits_{m \in N(f_s) \setminus x} \mu_{x_m \rightarrow f_s(x_m)}$, where $X_s=\{x_m|m \in N(f_s) \setminus x\}$. Our base case is:
+% \begin{equation}
+% \label{eq:f2xbase}
+% 	\mu_{f \rightarrow x}(x) := f(x) \text{ iff the only neighbor of f is x}
+% \end{equation}
+% \\
+% The sum product algorithm defines the message from a variable node to a factor node as the product of the messages it receives from its ``downstream" factors:
+% \begin{equation}
+% \label{eq:x2f}
+% 	\mu_{x \rightarrow f_s} := \prod_{l \in N(x) \setminus s} \mu_{f_l \rightarrow x}(x)
+% \end{equation}
+% \\
+% As before, there is a base case for this equation:
+% \[
+% 	\mu_{x \rightarrow f}(x) := 1 \text{ iff the only neighbor of x is f}
+% \]
+% \\
+% We can now find the marginal probabilities using Eq.~(\ref{eq:sum-product}). While our presentation focused on chains, the Sum Product algorithm applies to any tree structured factor graph. While seemingly simple, the details may be a bit opaque. To help clarify them, we will describe the message passing procedure on our specific chain graph in Fig.~(\ref{fig:factor_graph}).
+
+% Let's say, we want to compute $p(x_2)$. According to Eq.~(\ref{eq:sum-product},\ref{eq:f2x}), we have \\$p(x_2)=\mu_{f_{n+1}\rightarrow x_2}(x_2)\mu_{f_{n+2}\rightarrow x_2}(x_2)\mu_{f_2\rightarrow x_2}(x_2)$. So we need to compute messages $\mu_{f_{n+1}\rightarrow x_2},\mu_{f_{n+2}\rightarrow x_2}$ and $\mu_{f_2\rightarrow x_2}$. From Eq.~(\ref{eq:f2x},\ref{eq:f2xbase}), these messages can be computed as:
+% \begin{eqnarray}
+% \label{eq:msg1}
+% \mu_{f_{n+1}\rightarrow x_2}(x_2)&=&\sum_{x_1}\mu_{x_1\rightarrow f_{n+1}}(x_1)f_{n+1}(x_1,x_2) \\
+% \label{eq:msg2}
+% \mu_{f_{n+2}\rightarrow x_2}(x_2)&=&\sum_{x_3}\mu_{x_3\rightarrow f_{n+2}}(x_3)f_{n+2}(x_2,x_3) \\
+% \label{eq:msg3}
+% \mu_{f_2\rightarrow x_2}(x_2)&=&f_{2}(x_2)
+% \end{eqnarray}
+% where Eq.~(\ref{eq:msg3}) is already a base case while Eq.~(\ref{eq:msg1},\ref{eq:msg2}) are not.
+% We continue to expand $\mu_{x_1\rightarrow f_{n+1}}(x_1)$ in Eq.~(\ref{eq:msg1}) and $\mu_{x_3\rightarrow f_{n+2}}(x_3)$ in Eq.~(\ref{eq:msg2}), according top Eq.~(\ref{eq:x2f}) and (\ref{eq:f2xbase}):
+% \begin{eqnarray}
+% \label{eq:msg4}
+% \mu_{x_1\rightarrow f_{n+1}}(x_1)&=&\mu_{f_1\rightarrow x_1}(x_1)=f_1(x_1) \\
+% \label{eq:msg5}
+% \mu_{x_3\rightarrow f_{n+2}}(x_3)&=&\mu_{f_3\rightarrow x_3}(x_3)\mu_{f_{n+3}\rightarrow x_3}(x_3)=f_3(x_3)\mu_{f_{n+3}\rightarrow x_3}(x_3)
+% \end{eqnarray}
+% where Eq.~(\ref{eq:msg4}) is already a base case while Eq.~(\ref{eq:msg5}) is not. So we continue to expand $\mu_{f_{n+3}\rightarrow x_3}(x_3)$ in Eq.~(\ref{eq:msg5}) and so on, until we reach the other end of the chain. 
+
+% To summarize, to compute the marginal of a variable in the chain, we need to compute the messages starting from both ends of the chain one by one, until that variable has collected all its incoming messages, where each message is computed only once and then is finalized. 
+
+% \subsection{Message Passing on a Loopy Factor Graph}
+% In this assignment you are asked to compute the marginal probability of a variable in a loopy factor graph. The graph is shown in Fig.~{\ref{fig:loopy_graph}}. This graph is exactly the same as our linear chain, except that node $x_N$ is 
+% connected to $x_1$.
+
+% \begin{figure}[h]
+% 	\begin{center}
+% \begin{tikzpicture}[style=thick,scale=1]
+% 			\begin{scope}[shape=circle,minimum size=0.1cm]
+% 			\tikzstyle{every node}=[draw,fill]
+% 			\node[fill=red,scale= \factorsize,shape=rectangle] (F_1) at (0,1.5) {$\mathbf{f_{1}}$};
+% 			\node[fill=none,scale=\nodesize] (X_1) at (0,0) {$\mathbf{X_1}$};
+% 			\node[fill=red,scale= \factorsize,shape=rectangle] (F_N1) at (2,0) {$\mathbf{f_{n+1}}$};
+% 			\node[fill=red,scale= \factorsize,shape=rectangle] (F_2) at (4,1.5) {$\mathbf{f_{2}}$};
+% 			\node[fill=none,scale=\nodesize] (X_2) at (4,0) {$\mathbf{X_2}$};
+% 			\node[fill=red,scale= \factorsize,shape=rectangle] (F_N2) at (6,0) {$\mathbf{f_{n+2}}$};
+% 			\node[fill=red,scale= \factorsize,shape=rectangle] (F_3) at (8,1.5) {$\mathbf{f_{\ldots}}$};
+% 			\node[fill=none,scale=\nodesize] (X_3) at (8,0) {$\mathbf{...}$};
+% 			\node[fill=red,scale= \factorsize,shape=rectangle] (F_N3) at (10,0) {$\mathbf{f_{2n-1}}$};
+% 			\node[fill=red,scale= \factorsize,shape=rectangle] (F_4) at (12,1.5) {$\mathbf{f_{n}}$};
+% 			\node[fill=none,scale=\nodesize] (X_4) at (12,0) {$\mathbf{X_n}$};
+%             \node[fill=red,scale= \factorsize,shape=rectangle] (F_N4) at (6,-2) {$\mathbf{f_{2n}}$};
+% 			\draw [-] (X_1) -- (F_1);
+% 			\draw [-] (X_2) -- (F_2);
+% 			\draw [-] (X_3) -- (F_3);
+% 			\draw [-] (X_4) -- (F_4);
+% 			\draw [-] (X_1) -- (F_N1);
+% 			\draw [-] (F_N1) -- (X_2);
+% 			\draw [-] (X_2) -- (F_N2);
+% 			\draw [-] (F_N2) -- (X_3);
+% 			\draw [-] (X_3) -- (F_N3);
+% 			\draw [-] (F_N3) -- (X_4);
+%             \draw [-] (F_N4) -- (X_1);
+%             \draw [-] (F_N4) -- (X_4);
+% 			\end{scope}
+% 		\end{tikzpicture}
+% 		\caption{The loopy factor graph.}
+% 			\label{fig:loopy_graph}
+% 		\end{center}
+% \end{figure}
+% As before, each of the variables in our loop (the $x_i$) are $k$-ary discrete variables.
+
+% Unfortunately, the procedures described in Sum Product Algorithm work for tree structured graphs only and cannot be directly applied in a loopy factor graph. If we directly applied the algorithm, we would introduce infinite recursion
+% since there would be no base case. 
+
+% Therefore, we modify the algorithm to adapt it to loopy graphs. Our change will be to start passing incomplete messages,
+% messages that are missing information. This will obviate the problem of not having a base case to start from.
+% We will do this by specifying an order for computing messages and then updating messages in turn. 
+% However, since messages are missing information, we cannot stop once all messages have reached their final destination.
+% Instead, we will continue passing messages throughout the graph for $T$ iterations, or more generally, until the values
+% of the messages (and the marginals) have converged.
+% Note that this new algorithm has no guarantee of correctness or convergence, but provides approximate marginals.
+% In many cases, the results provide a good approximation to actual marginals.
+
+% The modified algorithm falls in a broader class of algorithms called \textit{Loopy Belief Propagation}, where ``Belief'' here refers to how a node thinks part of the graph should be, i.e., the part that is in the opposite direction of where the message
+% is passed. Beliefs are stored in the messages and are passed in the graph in order to update other messages. Each message is updated $T$ times.
+
+% The modified algorithm is as follows:
+% \begin{enumerate}
+% \item Initialize $\mu_{x_1\rightarrow f_{n+1}}(x_1)=1$ and $\mu_{x_1\rightarrow f_{2n}}(x_1)=1$ for all values $x_1$ can take.
+% \item For $t$ from $1$ to $T$
+%     \begin{enumerate}
+%     \item For $i$ from $1$ to $n$
+%         \begin{enumerate}
+%         \item Compute $\mu_{f_{n+i}\rightarrow x_{1+i\%n}}(x_{1+i\%n})$ from Eq.~(\ref{eq:f2x}).
+%         \item Compute $\mu_{x_{1+i\%n}\rightarrow f_{n+1+i\%n}}(x_{1+i\%n})$ from Eq.~(\ref{eq:x2f}).
+%         \end{enumerate}
+%     \item For $i$ from $n$ to $1$
+%         \begin{enumerate}
+%         \item Compute $\mu_{f_{n+i}\rightarrow x_{i}}(x_{i})$ from Eq.~(\ref{eq:f2x}).
+%         \item Compute $\mu_{x_{i}\rightarrow f_{n+(i-2)\%n+1}}(x_i)$ from Eq.~(\ref{eq:x2f}).
+%         \end{enumerate}
+%     \end{enumerate}
+% \end{enumerate}
+
+% After messages are passed as shown above, we will compute the marginal $p(x_i)$ for any $i$ according to Eq.~(\ref{eq:sum-product},\ref{eq:f2x}).
+
+
+% \subsection{Implementation} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% For the factor graph in this assignment, there are unary ($f_1$ to $f_n$) and binary ($f_{n+1}$ to $f_{2n}$) factors, and each factor $f_i$ is associated with a potential function $\psi_i$.
+% Each unary factor will have a potential function $\psi_{i}(a)$ which returns a real non-negative value corresponding to the potential when variable $x_{i}$ takes value $a$. Each factor node between two variable nodes will have a potential function $\psi_{i}(a, b)$ which returns a value corresponding to the potential when variable $x_{i-n}$ takes value $a$ and node $x_{i-n+1}$ takes value $b$ (except for the factor $f_{2n}$ where $x_n$ takes value $a$ and $x_1$ takes value $b$). Recall that every $x_i$ can take values from $1$ to $k$.\\
+% \\
+% We will provide you code that gives you values of $\psi_i(a)$ and $\psi_i(a, b)$. They will be in the class \code{cs475.loopMRF.LoopMRFPotentials} and have the signatures:
+% \begin{verbatim}
+%     public double potential(int i, int a)
+%     public double potential(int i, int a, int b)
+% \end{verbatim}
+% There are $n$ nodes in this loop, so the value of \code{i} must be between 1 and $n$ (inclusive) in the first method and between $n+1$ and $2n$ (inclusive) in the second method. Since every $x_i$ can take values from 1 to $k$ (inclusive), you must only call this function with values for \code{a} and \code{b} between 1 and $k$ (inclusive). You will be able to get values for $n$ and $k$ by calling the following functions in \code{cs475.loopMRF.LoopMRFPotentials}:
+% \begin{verbatim}
+%     public int loopLength()  // returns n
+%     public int numXValues()   // returns k
+% \end{verbatim}
+% These values will be read into \code{cs475.loopMRF.LoopMRFPotentials} from a text file that must be provided in the constructor:
+% \begin{verbatim}
+%     public LoopMRFPotentials(String data_file, int iterations)
+% \end{verbatim}
+% We are providing you with a sample of this data file, \code{sample\_mrf\_potentials.txt}. The format is \code{"n k"} on the first line and either \code{"i a potential"} or \code{"i a b potential"} on subsequent lines. Feel free to try out new loops to get different probability distributions, just make sure it contains all the needed potential values.
+
+% Your code will work by calculating these messages given the value of the potential functions between the variable nodes in the loop. For details on how to do this, you can refer to your notes from class, or see Bishop's examples in the book.
+
+% \subsubsection{Command Line Arguments}
+% We have already added 2 command line options in \code{cs475.loopMRF.LoopMRFPotentials} for you.
+% \begin{footnotesize}
+% \begin{verbatim}
+%     registerOption("data", "String", true, "The data to use.");
+%     registerOption("iterations", "int", true, "The number of iterations. default: 50");
+% \end{verbatim}
+% \end{footnotesize}
+
+% \subsection{What You Need to Implement} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% We have provided you with class \code{LoopyBP}, with one method left blank that you will need to implement:
+% \begin{verbatim}
+% public class LoopyBP {
+%     public double[] marginalProbability(int x_i) {
+%         // TODO
+%     }
+% }
+
+% \end{verbatim}
+%  The method should return a double array where the $j$th element is the probability that $x_i = j$. The length of this array should be $k+1$ and you should leave the 0 index as 0. These are probabilities so don't forget to normalize to sum to 1.
+
+
+% \subsection{How We Will Run Your Code} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% We will run your code by providing you with a single command line argument which is the data file:
+% \begin{verbatim}
+%     java cs475.loopMRF.LoopMRFTester -data mrf_potentials.txt -iterations T
+% \end{verbatim}
+% Note that we will use new data files with different values of $n$ and $k$, so make sure your code works for any reasonable input.\\
+% \\
+% Your output should just be the results of the print statements in the code given. {\bf Do not print anything else in the version you hand in.}
+
+\section{Analytical (40 points)}
+\paragraph{1. (10 points)} Consider the Bayesian Network given in Figure \ref{dgm}. Are the sets ${\bf A}$ and ${\bf B}$ d-separated given set ${\bf C}$ for each of the following definitions of ${\bf A}$, ${\bf B}$ and ${\bf C}$? Justify each answer.
+\begin{enumerate}[a.]
+\item ${\bf A} = \{x_1\}$, ${\bf B} = \{x_9\}$, ${\bf C} = \{x_5,x_{14}\}$\\
+\textbf{Ans:}\\
+In Figure 3(a), there are two paths from $x_9$ to $x_1$. The path that passes through $x_5$ is blocked because $x_5$ is observed and the directions to $x_5$ are "tail to tail". Another path that passes though $x_{14}$ is also blocked because $x_14$ is observed and the directions to $x_14$ are "tail to head". Therefore, $x_1$ and $x_9$ are conditional independent given $\{x_5,x_{14}\}$.\\
+
+In Figure 3(b), the only two paths that can go from $x_9$ to $x_1$ are blocked by $\{x_5,x_{14}\}$. Thus, $x_1$ and $x_9$ are conditional independent given $\{x_5,x_{14}\}$.
+%
+\item ${\bf A} = \{x_{11}\}$, ${\bf B} = \{x_{13}\}$, ${\bf C} = \{x_1,x_{15}\}$\\
+\textbf{Ans:}\\
+In Figure 3(a), The path from $x_{11}$ to $x_{13}$ must pass node $x_{15}$. Since $x_{15}$ is observed and the directions to $x_{15}$ is "head to head", the path is unblocked. So $x_{11}$ and $x_{15}$ are not conditional indepnedent given $\{x_1,x_{15}\}$.\\
+
+In Figure 3(b), since the path from $x_{11}$ to $x_{13}$ must go through $x_{15}$ and $x_{15}$ is observed, the path is blocked. Thus, $x_{11}$ and $x_{13}$ are conditional independent given $x_{15}$ is observed.
+%
+\item ${\bf A} = \{x_4\}$, ${\bf B} = \{x_5\}$, ${\bf C} = \{x_{10},x_{16}\}$\\
+\textbf{Ans:}\\
+In Figure 3(a), the path from $x_4$ to $x_5$ must pass through $x_15$. Since $x_{15}$ is not observed and the directions to $x_{15}$ are "head to head", the path is blocked. Therefore, $x_4$ and $x_5$ are conditional independent given $\{x_{10},x_{16}\}$.\\
+
+In Figure 3(b), since the paths from $x_4$ to $x_5$ are not blocked. Thus, $x_4$ and $x_5$ are not conditional independent given $\{x_{10},x_{16}\}$.
+%
+\item ${\bf A} = \{x_3, x_4\}$, ${\bf B} = \{x_{13},x_9\}$, ${\bf C} = \{x_{10},x_{15},x_{16}\}$\\
+\textbf{Ans:}\\
+In Figure 3(a), the path from $\{x_3, x_4\}$ to $\{x_{13},x_9\}$ must go through $x_{15}$. Since $x_{15}$ is observed and the directions to $x_{15}$ is "head to head", the path is not blocked. Thus, $\{x_3, x_4\}$ and $\{x_{13},x_9\}$ are not conditional independent given $\{x_{10},x_{15},x_{16}\}$.\\
+
+In Figure 3(b), since the path from $\{x_3, x_4\}$ to $\{x_{13},x_9\}$ is blocked by $x_{15}$. Thus, $\{x_3, x_4\}$ and $\{x_{13},x_9\}$ are conditional independent given $\{x_{10},x_{15},x_{16}\}$.
+\end{enumerate}
+Now consider a Markov Random Field in Figure 3(b), which has the same structure as the previous Bayesian network.  Re-answer each of the above questions with justifications for your answers.
+
+\newcommand{\ztnodesize}{.6}
+\begin{figure}[h]
+\centering
+\subfigure[Directed Graphical Model]{
+\begin{tikzpicture}[style=thick,scale=1] 
+\begin{scope}[shape=circle,minimum size=0.1cm] 
+\tikzstyle{every node}=[draw,fill] 
+\node[fill=none,scale=\ztnodesize] (X_1) at (2,4) {$\mathbf{X_1}$};
+\node[fill=none,scale=\ztnodesize] (X_2) at (4,4) {$\mathbf{X_2}$};
+\node[fill=none,scale=\ztnodesize] (X_3) at (0,3) {$\mathbf{X_3}$};
+\node[fill=none,scale=\ztnodesize] (X_4) at (2,3) {$\mathbf{X_4}$};
+\node[fill=none,scale=\ztnodesize] (X_5) at (4,3) {$\mathbf{X_5}$};
+\node[fill=none,scale=\ztnodesize] (X_6) at (1,2) {$\mathbf{X_6}$};
+\node[fill=none,scale=\ztnodesize] (X_7) at (3,2) {$\mathbf{X_7}$};
+\node[fill=none,scale=\ztnodesize] (X_8) at (4,2) {$\mathbf{X_8}$};
+\node[fill=none,scale=\ztnodesize] (X_9) at (5,2) {$\mathbf{X_9}$};
+\node[fill=none,scale=\ztnodesize] (X_10) at (0,1) {$\mathbf{X_{10}}$};
+\node[fill=none,scale=\ztnodesize] (X_11) at (1,1) {$\mathbf{X_{11}}$};
+\node[fill=none,scale=\ztnodesize] (X_12) at (2,1) {$\mathbf{X_{12}}$};
+\node[fill=none,scale=\ztnodesize] (X_13) at (4,1) {$\mathbf{X_{13}}$};
+\node[fill=none,scale=\ztnodesize] (X_14) at (5,1) {$\mathbf{X_{14}}$};
+\node[fill=none,scale=\ztnodesize] (X_15) at (1,0) {$\mathbf{X_{15}}$};
+\node[fill=none,scale=\ztnodesize] (X_16) at (3,0) {$\mathbf{X_{16}}$};
+\draw [->] (X_1) -- (X_3);
+\draw [->] (X_2) -- (X_5);
+\draw [->] (X_4) -- (X_3);
+\draw [->] (X_3) -- (X_6);
+\draw [->] (X_4) -- (X_6);
+\draw [->] (X_5) -- (X_9);
+\draw [->] (X_5) -- (X_8);
+\draw [->] (X_6) -- (X_10);
+\draw [->] (X_6) -- (X_11);
+\draw [->] (X_7) -- (X_12);
+\draw [->] (X_8) -- (X_12);
+\draw [->] (X_8) -- (X_13);
+\draw [->] (X_9) -- (X_14);
+\draw [->] (X_11) -- (X_15);
+\draw [->] (X_12) -- (X_15);
+\draw [->] (X_12) -- (X_16);
+\draw [->] (X_14) -- (X_16);
+\end{scope} 
+\end{tikzpicture}
+\label{dgm}
+}
+\subfigure[Undirected Graphical Model]{
+\begin{tikzpicture}[style=thick,scale=1] 
+\begin{scope}[shape=circle,minimum size=0.1cm] 
+\tikzstyle{every node}=[draw,fill] 
+\node[fill=none,scale=\ztnodesize] (X_1) at (2,4) {$\mathbf{X_1}$};
+\node[fill=none,scale=\ztnodesize] (X_2) at (4,4) {$\mathbf{X_2}$};
+\node[fill=none,scale=\ztnodesize] (X_3) at (0,3) {$\mathbf{X_3}$};
+\node[fill=none,scale=\ztnodesize] (X_4) at (2,3) {$\mathbf{X_4}$};
+\node[fill=none,scale=\ztnodesize] (X_5) at (4,3) {$\mathbf{X_5}$};
+\node[fill=none,scale=\ztnodesize] (X_6) at (1,2) {$\mathbf{X_6}$};
+\node[fill=none,scale=\ztnodesize] (X_7) at (3,2) {$\mathbf{X_7}$};
+\node[fill=none,scale=\ztnodesize] (X_8) at (4,2) {$\mathbf{X_8}$};
+\node[fill=none,scale=\ztnodesize] (X_9) at (5,2) {$\mathbf{X_9}$};
+\node[fill=none,scale=\ztnodesize] (X_10) at (0,1) {$\mathbf{X_{10}}$};
+\node[fill=none,scale=\ztnodesize] (X_11) at (1,1) {$\mathbf{X_{11}}$};
+\node[fill=none,scale=\ztnodesize] (X_12) at (2,1) {$\mathbf{X_{12}}$};
+\node[fill=none,scale=\ztnodesize] (X_13) at (4,1) {$\mathbf{X_{13}}$};
+\node[fill=none,scale=\ztnodesize] (X_14) at (5,1) {$\mathbf{X_{14}}$};
+\node[fill=none,scale=\ztnodesize] (X_15) at (1,0) {$\mathbf{X_{15}}$};
+\node[fill=none,scale=\ztnodesize] (X_16) at (3,0) {$\mathbf{X_{16}}$};
+\draw [-] (X_1) -- (X_3);
+\draw [-] (X_2) -- (X_5);
+\draw [-] (X_3) -- (X_4);
+\draw [-] (X_3) -- (X_6);
+\draw [-] (X_4) -- (X_6);
+\draw [-] (X_5) -- (X_9);
+\draw [-] (X_5) -- (X_8);
+\draw [-] (X_6) -- (X_10);
+\draw [-] (X_6) -- (X_11);
+\draw [-] (X_7) -- (X_12);
+\draw [-] (X_8) -- (X_12);
+\draw [-] (X_8) -- (X_13);
+\draw [-] (X_9) -- (X_14);
+\draw [-] (X_11) -- (X_15);
+\draw [-] (X_12) -- (X_15);
+\draw [-] (X_12) -- (X_16);
+\draw [-] (X_14) -- (X_16);
+\end{scope} 
+\end{tikzpicture}
+\label{ugm}
+}
+\caption{Two graphs are the same. However since (a) is directed and (b) is undirected the two graphs have different a conditional independence interpretation.}
+\end{figure}
+
+\paragraph{2. (10 points)} Let $X = (X_1, . . . , X_{16})^T$ be a random vector with distribution given by the graphical model in Figure 3(a). Consider variables $X_i \in \{ X_{6}, X_{8}, X_{12} \}$.  For each $X_{i}$, what is the minimal subset of the variables, $A\subset \mathcal{X} -\{X_{i}\}$, such that $X_{i}$ is independent of the rest of the variables ($\mathcal{X} - (A\cup{\{ X_{i}\}}$)) given A? Justify your answer.  Answer the same questions for Figure 3(b).\\
+\textbf{Ans:}\\
+In Figure 3(a), if $x_3$ is blocked, then $x_1$ will be independent to $x_i$. Since $x_4$, $x_{10}$, $x_{11}$, $x_{15}$, $x_7$, $x_{16}$, $x_5$, $x_{13}$ are directly connected to $x_i$, so they must be blocked. Because $x_16$ is blocked, and the directions to it are "head to head", $x_{14}$ must also be blocked. Therefore, in Figure 3(a), the minimal subset $A$ is $\{x_3, x_4, x_{10}, x_{11}, x_{15}, x_7, x_{16}, x_5, x_{13}, x_{14}\}$ for $x_i \in \{ X_{6}, X_{8}, X_{12}\}$ to be independet of the remaining variables.\\
+
+In Figure 3(b), the minimal subset $A$ will be all the variables that are direct neighbors of $x_i$. So $A = \{x_3, x_4, x_{10}, x_{11}, x_{15}, x_7, x_{16}, x_5, x_{13}\}$.
+
+%\paragraph{3. (10 points)} Let $X = (X_1, . . . , X_{d}^T)$ be a random vector with a $d$-variate Gaussian distribution $N(0,\Sigma)$. Define the precision matrix as $\Omega = \Sigma^{-1}$. Please prove that $\Omega_{ij}=0$ implies the conditional independence between $X_i$ and $X_j$ given the remaining variables, i.e., a sparsity pattern $\Omega$ is equivalent to an adjacency matrix of a Gaussian Markov random filed.
+%
+%Such a phenomenon enables us to estimate the unknown structure of a Gaussian Markov random filed by maximizing the penalized Gaussian likelihood,
+%\begin{align}\label{glasso}
+%\widehat{\Omega} = \arg\max_{\Omega} \log \rm{det}(\Omega) - {\rm tr}(S\Omega) - \lambda\sum_{j<k}|\Omega_{jk}|,
+%\end{align}
+%where $S$ is the sample covariance matrix, ${\rm det}(\cdot)$ denotes the determinant of the matrix, and ${\rm tr}(\cdot)$ denotes the trace of the matrix. \eqref{glasso} is well known as the graphical lasso, which means ``the lasso for Gaussian graphical models".
+
+\paragraph{4. (10 points)} 
+The notation $(A \perp B | C)$ means A and B are conditionally independent given C.
+Prove or disprove (by providing a counter-example) each of the following properties of independence:
+\begin{enumerate}[(a)]
+\item $(X\perp  Y, W | Z)$ implies $(X\perp  Y | Z)$.\\
+\textbf{Ans:}\\
+We know $(X\perp  Y, W | Z)$, so we can write 
+$$P(X, Y, W | Z) = P(X|Z)P(Y, W|Z)$$
+Then we sum over W to eliminate W in the equation. So we get 
+$$\sum_W P(X, Y, W | Z) = \sum_W P(X|Z)P(Y, W|Z)$$
+$$P(X, Y|Z) = P(X|Z)\sum_W P(Y, W|Z)$$
+$$P(X, Y|Z) = P(X|Z)P(Y|Z)$$
+Then, we get the result that $(X\perp  Y | Z)$. Thus, we have proved that $(X\perp  Y, W | Z)$ implies $(X\perp  Y | Z)$.
+\item $(X\perp Y | Z)$ and $(X \perp W | Y,Z)$ imply $(X\perp Y,W | Z)$.\\
+\textbf{Ans:}\\
+We first apply Bayes rule and get following equation:
+$$P(X, Y, W | Z) = P(X | Y, W, Z)P(Y, W | Z)$$
+Since $(X \perp W | Y,Z)$, we know $P(X|W, Y, Z) = P(X|Y, Z)$. Then we have 
+$$P(X, Y, W | Z) = P(X | Y, Z)P(Y, W | Z)$$
+Since $(X\perp Y | Z)$, we know $P(X|Y, Z) = P(X|Z)$. Then we have 
+$$P(X, Y, W | Z) = P(X | Z)P(Y, W | Z)$$
+So we get the result that $(X\perp Y,W | Z)$. Hence, we have proved that\\
+$(X\perp Y | Z)$ and $(X \perp W | Y,Z)$ imply $(X\perp Y,W | Z)$.
+\item $(X\perp Y | Z)$ and $(X \perp W | Z)$ imply $(X\perp Y,W | Z)$.
+\end{enumerate}
+
+
+\paragraph{5. (10 points)} A Markov Random Field usually cannot help us with the factorization of the distribution function. However, some MRFs can be converted to Bayesian Networks. For example, consider the graph structure in Figure \ref{fig:utm1}.
+\begin{figure}[h]
+	\begin{center}
+\begin{tikzpicture}[style=thick,scale=1] 
+			\begin{scope}[shape=circle,minimum size=0.1cm] 
+			\tikzstyle{every node}=[draw,fill] 
+			\node[fill=none,scale=\ztnodesize] (X_1) at (0,0.5) {$\mathbf{X_1}$};
+			\node[fill=none,scale=\ztnodesize] (X_2) at (1,0) {$\mathbf{X_2}$};
+			\node[fill=none,scale=\ztnodesize] (X_3) at (1,1) {$\mathbf{X_3}$};
+			\draw [-] (X_1) -- (X_2);
+			\draw [-] (X_1) -- (X_3);
+			\end{scope} 
+		\end{tikzpicture}
+		\caption{The Original Undirected Graph}
+			\label{fig:utm1}
+		\end{center}
+\end{figure}
+From this graph, we know that $X_2$ and $X_3$ are conditionally independent given $X_1$. We can draw the corresponding directed graph as Figure \ref{fig:dtm2}.
+\begin{figure}[h]
+	\begin{center}
+\begin{tikzpicture}[style=thick,scale=1] 
+			\begin{scope}[shape=circle,minimum size=0.1cm] 
+			\tikzstyle{every node}=[draw,fill] 
+			\node[fill=none,scale=\ztnodesize] (X_1) at (0,0.5) {$\mathbf{X_1}$};
+			\node[fill=none,scale=\ztnodesize] (X_2) at (1,0) {$\mathbf{X_2}$};
+			\node[fill=none,scale=\ztnodesize] (X_3) at (1,1) {$\mathbf{X_3}$};
+			\draw [->] (X_1) -- (X_2);
+			\draw [->] (X_1) -- (X_3);
+			\end{scope} 
+		\end{tikzpicture}
+		\caption{The Converted Directed Graph}
+			\label{fig:dtm2}
+		\end{center}
+\end{figure}
+This suggests the following factorization of the joint probability:
+\begin{eqnarray}
+P(X_1, X_2, X_3) = P(X_3 | X_1) P(X_2 | X_1) P(X_1) \nonumber
+\end{eqnarray}
+
+Now consider the following graphical model in Figure \ref{fig:utm}.
+\begin{figure}[h]
+	\begin{center}
+\begin{tikzpicture}[style=thick,scale=1] 
+			\begin{scope}[shape=circle,minimum size=0.1cm] 
+			\tikzstyle{every node}=[draw,fill] 
+			\node[fill=none,scale=\ztnodesize] (X_1) at (0,2) {$\mathbf{X_1}$};
+			\node[fill=none,scale=\ztnodesize] (X_2) at (1,2) {$\mathbf{X_2}$};
+			\node[fill=none,scale=\ztnodesize] (X_3) at (0,1) {$\mathbf{X_3}$};
+			\node[fill=none,scale=\ztnodesize] (X_4) at (1,1) {$\mathbf{X_4}$};
+			\node[fill=none,scale=\ztnodesize] (X_5) at (2,1) {$\mathbf{X_5}$};
+			\node[fill=none,scale=\ztnodesize] (X_6) at (2,0) {$\mathbf{X_6}$};
+			\draw [-] (X_1) -- (X_2);
+			\draw [-] (X_2) -- (X_3);
+			\draw [-] (X_2) -- (X_4);
+			\draw [-] (X_2) -- (X_5);
+			\draw [-] (X_5) -- (X_6);
+			\end{scope} 
+		\end{tikzpicture}
+		\caption{An Undirected Graph}
+			\label{fig:utm}
+		\end{center}
+\end{figure}
+
+As before, we can read the conditional independence relations from the graph. 
+\begin{enumerate}[(a)]
+\item Following the example above, show a factorization of the joint distribution.\\
+\textbf{Ans:}\\
+$P(X_1, X_2, X_3, X_4, X_5, X_6) = P(X_1 | X_2)P(X_3 | X_2)P(X_4 | X_2)P(X_6 | X_5)P(X_5 | X_2)P(X_2)$
+
+\item Is this factorization unique, meaning, could you have written other factorizations that correspond this model?\\
+\textbf{Ans:}\\
+This factorization is not unique. There still are other factorizations for this graph.
+
+\item If the factorization is unique, show why it is unique. If it is not unique, provide an alternate factorization.\\
+\textbf{Ans:}\\
+$P(X_1, X_2, X_3, X_4, X_5, X_6) = P(X_1 | X_2)P(X_3 | X_2)P(X_4 | X_2)P(X_6 | X_5)P(X_2 | X_5)P(X_5)$
+% $P(X_1, X_2, X_3, X_4, X_5, X_6) = P(X_1 | X_2)P(X_3 | X_2)P(X_4 | X_2)P(X_2 | X_5)P(X_5 | X_6)P(X_6)$
+\end{enumerate}
+
+
+
+
+
+
+\end{document}
+
+

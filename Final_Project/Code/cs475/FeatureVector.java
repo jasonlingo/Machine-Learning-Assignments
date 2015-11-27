@@ -21,17 +21,14 @@ public class FeatureVector implements Serializable {
 	}
 
 	public void add(int index, double value) {
-		// TODO Auto-generated method stub
 		this._featureVector.put(index, value);
 	}
 	
 	public double get(int index) {
-		// TODO Auto-generated method stub
 		return this._featureVector.get(index);
 	}
 
 	public int size() {
-		// TODO Auto-generated method stub
 		return this._featureVector.size();
 	}
 

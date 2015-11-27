@@ -1,28 +1,20 @@
 package cs475;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.LinkedList;
-import java.util.List;
-
+import cs475.NeuralNetwork.DataReader;
+import cs475.NeuralNetwork.FeatureMatrix;
+import cs475.NeuralNetwork.NeuralNetwork;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
+
+import java.io.*;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Classify {
 	static public LinkedList<Option> options = new LinkedList<Option>();
 
 	final static int DEFAULT_SGD_ITERATION = 20;
-	final static double DEFAULT_ETA_ZERO = 0.01;
-
 	public static int sgd_iterations;
-	public static double sgd_eta0;
-	public static double pegasos_lambda;
 
 	public static void main(String[] args) throws IOException {
 		// Parse the command line.
@@ -34,33 +26,26 @@ public class Classify {
 		String data = CommandLineUtilities.getOptionValue("data");
 		String predictions_file = CommandLineUtilities.getOptionValue("predictions_file");
 		String model_file = CommandLineUtilities.getOptionValue("model_file");
-		String algorithm = CommandLineUtilities.getOptionValue("algorithm");
+		String layerInfo = CommandLineUtilities.getOptionValue("layer_info");
 
 		sgd_iterations = DEFAULT_SGD_ITERATION;
 		if (CommandLineUtilities.hasArg("sgd_iterations"))
 			sgd_iterations = CommandLineUtilities.getOptionValueAsInt("sgd_iterations");
 
-		sgd_eta0 = DEFAULT_ETA_ZERO;
-		if (CommandLineUtilities.hasArg("sgd_eta0"))
-			sgd_eta0 = CommandLineUtilities.getOptionValueAsFloat("sgd_eta0");
-
-		pegasos_lambda = 1e-4;
-		if (CommandLineUtilities.hasArg("pegasos_lambda"))
-			pegasos_lambda = CommandLineUtilities.getOptionValueAsFloat("pegasos_lambda");
-
 		if (mode.equalsIgnoreCase("train")) {
-			if (data == null || algorithm == null || model_file == null) {
-				System.out.println("Train requires the following arguments: data, algorithm, model_file");
+			if (data == null || model_file == null || layerInfo == null) {
+				System.out.println("Train requires the following arguments: data, model_file, layer_info");
 				System.exit(0);
 			}
+
 			// Load the training data.
-			DataReader data_reader = new DataReader(data, true);
-			List<Instance> instances = data_reader.readData();
-			data_reader.close();
-			
+			DataReader data_reader = new DataReader();
+		    FeatureMatrix fm = data_reader.readData(data, layerInfo);
+
 			// Train the model.
-			Predictor predictor = train(instances, algorithm);
+			Predictor predictor = train(fm);
 			saveObject(predictor, model_file);
+			System.out.println("Training ended");
 			
 		} else if (mode.equalsIgnoreCase("test")) {
 			if (data == null || predictions_file == null || model_file == null) {
@@ -69,13 +54,12 @@ public class Classify {
 			}
 			
 			// Load the test data.
-			DataReader data_reader = new DataReader(data, true);
-			List<Instance> instances = data_reader.readData();
-			data_reader.close();
-			
+			DataReader data_reader = new DataReader();
+			FeatureMatrix fm = data_reader.readData(data, null);
+
 			// Load the model.
 			Predictor predictor = (Predictor)loadObject(model_file);
-			evaluateAndSavePredictions(predictor, instances, predictions_file);
+//			evaluateAndSavePredictions(predictor, fm, predictions_file);
 		} else {
 			System.out.println("Requires mode argument.");
 		}
@@ -83,39 +67,18 @@ public class Classify {
 
 	/**
 	 * Train a model according to the given algorithm on training data.
-	 * @param instances
-	 * @param algorithm
+	 * @param fm
 	 * @return a trained predictor.
 	 */
-	private static Predictor train(List<Instance> instances, String algorithm) {
-		// TODO Train the model using "algorithm" on "data"
+	private static Predictor train(FeatureMatrix fm) {
 		// TODO Evaluate the model
-		Predictor predictor;
-		switch (algorithm){
-			case "majority":
-				predictor = new Majority();
-				break;
-			case "even_odd":
-				predictor = new EvenOdd();
-				break;
-			case "logistic_regression":
-				// Set total number of iterations.
-				predictor = new LogisticRegression(sgd_iterations, sgd_eta0);
-				break;
-			case "pegasos":
-				predictor = new SVM(sgd_iterations, pegasos_lambda);
-				break;
-			default:
-				System.out.println("Please check the algorithm's name.");
-				return null;
-		}
-		predictor.train(instances);
+		Predictor predictor = new NeuralNetwork();
+		predictor.train(fm);
 
 		// Evaluate the trained model.
 		AccuracyEvaluator acuEva = new AccuracyEvaluator();
-		System.out.print("For training, ");
-		double accuracy = acuEva.evaluate(instances, predictor);
-		//System.out.printf("Accuracy of training is %f\n", accuracy);
+//		double accuracy = acuEva.evaluate(fm, predictor);
+//		System.out.printf("Accuracy of training is %f\n", accuracy);
 
 		return predictor;
 	}
@@ -134,9 +97,8 @@ public class Classify {
 
 		// Evaluate the testing result.
 		AccuracyEvaluator acuEva = new AccuracyEvaluator();
-		System.out.print("For testing, ");
 		double accuracy = acuEva.evaluate(instances, predictor);
-		//System.out.printf("Accuracy of testing is %f\n", accuracy);
+		System.out.printf("Accuracy of testing is %f\n", accuracy);
 		
 		writer.close();
 		
@@ -188,11 +150,11 @@ public class Classify {
 		registerOption("data", "String", true, "The data to use.");
 		registerOption("mode", "String", true, "Operating mode: train or test.");
 		registerOption("predictions_file", "String", true, "The predictions file to create.");
-		registerOption("algorithm", "String", true, "The name of the algorithm for training.");
 		registerOption("model_file", "String", true, "The name of the model file to create/load.");
 		registerOption("sgd_iterations", "int", true, "The number of SGD iterations.");
-		registerOption("sgd_eta0", "double", true, "The constant scalar for learning rate in AdaGrad.");
-		registerOption("pegasos_lambda", "double", true, "The regularization parameter for Pegasos.");
+		registerOption("layer_info", "String", true, "The name of layer information.");
+//		registerOption("sgd_eta0", "double", true, "The constant scalar for learning rate in AdaGrad.");
+//		registerOption("pegasos_lambda", "double", true, "The regularization parameter for Pegasos.");
 
 		// Other options will be added here.
 	}
