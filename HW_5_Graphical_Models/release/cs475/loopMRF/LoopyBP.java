@@ -69,6 +69,7 @@ public class LoopyBP {
 	 */
 	private void computeMessage(){
 		for (int t = 1; t <= this.iterations; t++) {
+//			System.out.printf("----- %d-th iteration -----\n", t);
 			for (int i = 1; i <= n; i++) {
 				computeFtoX(n + i, 1 + i % n, false);
 				computeXtoF(1 + i % n, n + 1 + i % n);
@@ -98,6 +99,7 @@ public class LoopyBP {
 					result += this.potentials.potential(fi, x, xf) * muXtoF[ne.get(0)][fi][xf];
 			}
 			muFtoX[fi][xi][x] = result;
+//			System.out.printf("F%d->X%d (%d) = %f\n", fi, xi, x, result);
 		}
 	}
 
@@ -118,6 +120,7 @@ public class LoopyBP {
 					result *= muFtoX[f][xi][x];
 			}
 			muXtoF[xi][fi][x] = result;
+//			System.out.printf("X%d->F%d (%d) = %f\n", xi, fi, x, result);
 		}
 	}
 

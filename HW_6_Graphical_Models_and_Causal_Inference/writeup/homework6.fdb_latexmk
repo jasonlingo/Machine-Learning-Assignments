@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1449260468 "homework5.tex" "homework5.pdf" "homework5" 1449262746
+["pdflatex"] 1449290968 "homework6.tex" "homework6.pdf" "homework6" 1449290968
   "/usr/local/texlive/2015/texmf-dist/tex/context/base/supp-pdf.mkii" 1337017135 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "/usr/local/texlive/2015/texmf-dist/tex/generic/ifxetex/ifxetex.sty" 1284331290 1458 43ab4710dc82f3edeabecd0d099626b2 ""
   "/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/gettitlestring.sty" 1303254447 8237 52810bdb4db2270e717422560a104aea ""
@@ -85,6 +85,7 @@
   "/usr/local/texlive/2015/texmf-dist/tex/latex/ms/everyshi.sty" 1177890616 3878 6aa7c08ff2621006e0603349e40a30a8 ""
   "/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/auxhook.sty" 1303254447 3834 707ef09f31d7d2ea47ba89974755dfe0 ""
   "/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty" 1303254447 12029 04d7fdf76e0464c23b5aa3a727952d7c ""
+  "/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/epstopdf.sty" 1303254447 4167 66162eac0c3ee2df73bb1973084305c9 ""
   "/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/grfext.sty" 1335995445 7075 bd0c34fbf1ae8fd1debd2a554e41b2d5 ""
   "/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/kvoptions.sty" 1335995445 22417 c74ff4af6a1aa2b65d1924020edbbe11 ""
   "/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/rerunfilecheck.sty" 1303254447 9581 1158efc648bc09d5064db5703c882159 ""
@@ -105,11 +106,12 @@
   "/usr/local/texlive/2015/texmf-dist/tex/latex/url/url.sty" 1388531844 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "/usr/local/texlive/2015/texmf-dist/tex/latex/wrapfig/wrapfig.sty" 1137111090 26220 3701aebf80ccdef248c0c20dd062fea9 ""
   "/usr/local/texlive/2015/texmf-dist/tex/latex/xcolor/xcolor.sty" 1169481954 55224 a43bab84e0ac5e6efcaf9a98bde73a94 ""
-  "homework5.aux" 1449260469 2323 9c967466d8f3112b0b17ccd0277afc57 ""
-  "homework5.out" 1449260469 59 b6c27759b52fdc0f880e930b5b23a63e ""
-  "homework5.tex" 1449260468 32611 62e4595e12574dea83a26b6610c87cd4 ""
+  "homework6.aux" 1449290968 1143 c15ee4de29c83e4c6ca28b1b2ada4482 ""
+  "homework6.out" 1449290968 59 7ce72e8a63a334bb0cfcae9ab1dd8707 ""
+  "homework6.tex" 1449290967 5872 1e254514320dd43ba368d599f08c26a9 ""
+  "pic/DAG.jpg" 1449266308 20319 808bc989ab0c9013f062d49c1e594bdb ""
   (generated)
-  "homework5.pdf"
-  "homework5.log"
-  "homework5.aux"
-  "homework5.out"
+  "homework6.pdf"
+  "homework6.out"
+  "homework6.log"
+  "homework6.aux"

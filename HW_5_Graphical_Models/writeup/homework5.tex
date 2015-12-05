@@ -422,9 +422,11 @@ Now consider a Markov Random Field in Figure 3(b), which has the same structure 
 
 \paragraph{2. (10 points)} Let $X = (X_1, . . . , X_{16})^T$ be a random vector with distribution given by the graphical model in Figure 3(a). Consider variables $X_i \in \{ X_{6}, X_{8}, X_{12} \}$.  For each $X_{i}$, what is the minimal subset of the variables, $A\subset \mathcal{X} -\{X_{i}\}$, such that $X_{i}$ is independent of the rest of the variables ($\mathcal{X} - (A\cup{\{ X_{i}\}}$)) given A? Justify your answer.  Answer the same questions for Figure 3(b).\\
 \textbf{Ans:}\\
-In Figure 3(a), if $x_3$ is blocked, then $x_1$ will be independent to $x_i$. Since $x_4$, $x_{10}$, $x_{11}$, $x_{15}$, $x_7$, $x_{16}$, $x_5$, $x_{13}$ are directly connected to $x_i$, so they must be blocked. Because $x_16$ is blocked, and the directions to it are "head to head", $x_{14}$ must also be blocked. Therefore, in Figure 3(a), the minimal subset $A$ is $\{x_3, x_4, x_{10}, x_{11}, x_{15}, x_7, x_{16}, x_5, x_{13}, x_{14}\}$ for $x_i \in \{ X_{6}, X_{8}, X_{12}\}$ to be independet of the remaining variables.\\
+For $x_6$ in Figure 3(a), if $x_3$ and $x_4$ is blocked, $x_1$ and $x_6$ are conditional independent. If $x_{11}$ is blocked, then $x_6$ is conditional independent with all the node in the right part. $x_{10}$ also has to be blocked since it directly connects to $x_6$. So the subset for $x_6$ is $\{x_3, x_4, x_{10}, x_{11}\}$. 
+For $x_8$ in Figure 3(a), if $x_5$ is blocked, $x_2$ and $x_9$ are conditional independent with $x_8$. $x_{16}$ and $x_{12}$ also need to be blocked. Since the direction to $x_{12}$ is "head to head", $x_7$ also need to be blocked. $x_{13}$ also needs to be blocked since it connects to $x_8$ directly. So the subset for $x_8$ is $\{x_5, x_7, x_{12}, x_{13}\}$.
+For $x_{12}$ in Figure 3(a), $x_7$ and $x_8$ need to be blocked since they connect to $x_{12}$ directly. Since the directions to $x_{15}$ and $x_{16}$ are both "head to head", $x_{15}$ and $x_{16}$ need not to be blocked. So the subset of $X_{12}$ is $\{x_7, x_8, x_{11}, x_{14}, x_{15}, x_{16}\}$.\\
 
-In Figure 3(b), the minimal subset $A$ will be all the variables that are direct neighbors of $x_i$. So $A = \{x_3, x_4, x_{10}, x_{11}, x_{15}, x_7, x_{16}, x_5, x_{13}\}$.
+For $x_6$ in Figure 3(b), the minimal subset will be all the variables that are direct neighbors of $x_6$. So the subset of $x_6$ is $\{x_3, x_4, x_{10}, x_{11}\}$. For $x_8$, the subset is $\{x_5, x_9, x_{12}, x_{13}\}$. For $x_{12}$, the subset is $\{x_7, x_8, x_{15}, x_{16}\}$.
 
 %\paragraph{3. (10 points)} Let $X = (X_1, . . . , X_{d}^T)$ be a random vector with a $d$-variate Gaussian distribution $N(0,\Sigma)$. Define the precision matrix as $\Omega = \Sigma^{-1}$. Please prove that $\Omega_{ij}=0$ implies the conditional independence between $X_i$ and $X_j$ given the remaining variables, i.e., a sparsity pattern $\Omega$ is equivalent to an adjacency matrix of a Gaussian Markov random filed.
 %
@@ -447,6 +449,7 @@ $$\sum_W P(X, Y, W | Z) = \sum_W P(X|Z)P(Y, W|Z)$$
 $$P(X, Y|Z) = P(X|Z)\sum_W P(Y, W|Z)$$
 $$P(X, Y|Z) = P(X|Z)P(Y|Z)$$
 Then, we get the result that $(X\perp  Y | Z)$. Thus, we have proved that $(X\perp  Y, W | Z)$ implies $(X\perp  Y | Z)$.
+%
 \item $(X\perp Y | Z)$ and $(X \perp W | Y,Z)$ imply $(X\perp Y,W | Z)$.\\
 \textbf{Ans:}\\
 We first apply Bayes rule and get following equation:
@@ -457,7 +460,23 @@ Since $(X\perp Y | Z)$, we know $P(X|Y, Z) = P(X|Z)$. Then we have
 $$P(X, Y, W | Z) = P(X | Z)P(Y, W | Z)$$
 So we get the result that $(X\perp Y,W | Z)$. Hence, we have proved that\\
 $(X\perp Y | Z)$ and $(X \perp W | Y,Z)$ imply $(X\perp Y,W | Z)$.
-\item $(X\perp Y | Z)$ and $(X \perp W | Z)$ imply $(X\perp Y,W | Z)$.
+%
+\item $(X\perp Y | Z)$ and $(X \perp W | Z)$ imply $(X\perp Y,W | Z)$.\\
+\textbf{Ans:}\\
+Given $Z$ is the XOR space. The relationship between $X$, $Y$ and $W$ is shown below:\\
+\begin{center}
+  \begin{tabular}{ | l | c | r |}
+    \hline
+    X & Y & W \\ \hline \hline
+    0 & 0 & 0 \\ \hline 
+    0 & 1 & 1 \\ \hline
+    1 & 0 & 1 \\ \hline
+    1 & 1 & 0 \\ 
+    \hline
+  \end{tabular}
+\end{center}
+For showing the independence between $X$ and $Y$, we need to prove that $P(X, Y|Z) = P(X|Z)P(Y|Z)$. We first prove $P(X=0, Y=0|Z) = P(X=0|Z)P(Y=0|Z)$. We know that $P(X=0, Y=0|Z) = 1/4$, $P(X=0|Z) = 1/2$ and $P(Y=0|Z) = 1/2$, so $P(X=0, Y=0|Z) = P(X=0|Z)P(Y=0|Z) = 1/4$. We can use the same way to prove all the combinations of $X$ and $Y$ that $P(X, Y|Z) = P(X|Z)P(Y|Z)$. Thus, $X$ and $Y$ are independent given $Z$. We can also apply the same proof for $X$ and $W$ and prove that $X$ and $W$ are independent given $Z$. But $P(X=0, Y=0, W=0|Z) \neq P(X=0|Z)P(Y=0, W=0|Z)$ because $P(X=0, Y=0, W=0|Z) = 1/4$ is not equal to $P(X=0|Z)P(Y=0, W=0|Z) = 1/2 \times 1/4 = 1/8$. Therefore, the given expression is wrong.
+
 \end{enumerate}
 
 
