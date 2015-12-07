@@ -3,7 +3,7 @@ import csv
 
 data = []
 label = []
-num = 10000
+num = 1000
 testNum = 100
 #load training data
 with open('train.csv', 'rb') as csvfile:
