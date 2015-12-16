@@ -2,6 +2,7 @@ from classifier import Classifier
 import numpy as np
 import math
 import time
+import sys
 
 class NeuralNetwork(Classifier):
     """
@@ -9,14 +10,14 @@ class NeuralNetwork(Classifier):
     """
 
     def __init__(self, training_data, nodeNum, weightInitMode=None, momentumFactor=0.0):
-        # number of total training iteration
-        self.ITERATION = 1000
+        # # number of total training iteration
+        # self.ITERATION = 1000
 
         # for randomly initializing theta
         self.EPISLON = 0.1
 
         # learning rate
-        self.ALPHA = 0.00001
+        self.ALPHA = 0.00002
 
         # decay rate for momentum
         self.momentumFactor = momentumFactor
@@ -45,6 +46,7 @@ class NeuralNetwork(Classifier):
         self.z = {}
         self.a = {}
         self.djdw = {}
+        self.hasInitTheta = False
 
         # get labels and nodes for the first layer (input layer)
         self.labels, self.x = self.splitData(training_data)
@@ -72,7 +74,7 @@ class NeuralNetwork(Classifier):
         examples = np.hstack((examples, onesCol))            # add one column (all ones) for bias
         return labels, examples
 
-    def train(self):
+    def train(self, iteration):
         """
         Train this neural network with feed-forward and back-propagation.
         It will first initialize the weight according to different initialization
@@ -81,20 +83,24 @@ class NeuralNetwork(Classifier):
         When training is finished, the theta can be used for prediction.
         """
         startTime = time.time()
-        self.initTheta()
+        if not self.hasInitTheta:
+            self.initTheta()
+            self.hasInitTheta = True
 
         iter = 0
-        cost = 1
-        while cost > 0.01 and iter <= self.ITERATION:
+        cost = sys.maxint
+        while cost > 1.0 and iter <= iteration:
             iter += 1
             yHat = self.feedForward(self.x)
-            cost = self.cost(self.labels, yHat)
+
             if iter < 10:
+                cost = self.cost(self.labels, yHat)
                 print cost
             self.backpropagation()
             self.updateTheta()
 
             if iter % 10 == 0:
+                cost = self.cost(self.labels, yHat)
                 print "cost = ", cost, " (", iter, " iteration)"
 
         # print "cost = ", cost
@@ -193,6 +199,12 @@ class NeuralNetwork(Classifier):
         cost = sum(sum(costMat * costMat)) / 2.0
         return cost
 
+    def setAlpha(self, alpha):
+        self.ALPHA = alpha
+
+    def getAlpha(self):
+        return self.ALPHA
+
     def predict(self, data):
         data = data.reshape(1, data.shape[0])
         label, feature = self.splitData(data)
@@ -217,7 +229,6 @@ class NeuralNetwork(Classifier):
 
 def sigmoid(z):
     return 1 / (1 + np.exp(-z))
-    # return 1 / (1 + expit(-z))
 
 def sigmoidDe(z):
     return sigmoid(z) * (1 - sigmoid(z))

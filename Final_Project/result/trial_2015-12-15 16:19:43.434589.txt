@@ -1,0 +1,40 @@
+
+---------- Settings ----------
+Examples                 : 30000
+Batch size               : 1
+Alpha                    : 0.0001
+Momentum factor          : 0.8
+# of Nodes in all layers : [784, 1000, 10]
+Training iteration so far: 5
+---------- Result ----------
+Alpha is 0.0001
+Count correct {0.0: 0, 1.0: 0, 2.0: 2970, 3.0: 0, 4.0: 0, 5.0: 0, 6.0: 0, 7.0: 0, 8.0: 0, 9.0: 0}
+All predictions {0.0: 0, 1.0: 190, 2.0: 29810, 3.0: 0, 4.0: 0, 5.0: 0, 6.0: 0, 7.0: 0, 8.0: 0, 9.0: 0}
+The accuracy for training is 0.099
+---------- Result ----------
+Alpha is 0.0001
+Count correct {0.0: 0, 1.0: 0, 2.0: 953, 3.0: 0, 4.0: 0, 5.0: 0, 6.0: 0, 7.0: 0, 8.0: 0, 9.0: 0}
+All predictions {0.0: 0, 1.0: 62, 2.0: 9938, 3.0: 0, 4.0: 0, 5.0: 0, 6.0: 0, 7.0: 0, 8.0: 0, 9.0: 0}
+The accuracy for testing is 0.0953
+
+*****************************************************
+Re-initialize trail with alpha = 0.0001
+*****************************************************
+
+---------- Settings ----------
+Examples                 : 30000
+Batch size               : 1
+Alpha                    : 0.0001
+Momentum factor          : 0.8
+# of Nodes in all layers : [784, 1000, 10]
+Training iteration so far: 100000
+---------- Result ----------
+Alpha is 0.0001
+Count correct {0.0: 2765, 1.0: 3326, 2.0: 885, 3.0: 1655, 4.0: 4, 5.0: 0, 6.0: 1247, 7.0: 2273, 8.0: 0, 9.0: 2}
+All predictions {0.0: 5285, 1.0: 14172, 2.0: 943, 3.0: 3196, 4.0: 4, 5.0: 0, 6.0: 1329, 7.0: 5043, 8.0: 0, 9.0: 28}
+The accuracy for training is 0.405233333333
+---------- Result ----------
+Alpha is 0.0001
+Count correct {0.0: 948, 1.0: 1126, 2.0: 309, 3.0: 573, 4.0: 2, 5.0: 0, 6.0: 392, 7.0: 767, 8.0: 0, 9.0: 1}
+All predictions {0.0: 1832, 1.0: 4664, 2.0: 326, 3.0: 1073, 4.0: 2, 5.0: 0, 6.0: 414, 7.0: 1681, 8.0: 0, 9.0: 8}
+The accuracy for testing is 0.4118

@@ -1,59 +1,27 @@
-"""
-Class for a classification algorithm.
-"""
-
 import numpy as np
 from collections import Counter
+import datetime
+from NeuralNetwork import NeuralNetwork
 
 class Classifier:
 
     def __init__(self, classifier_type, **kwargs):
         """
-        Initializer. Classifier_type should be a string which refers
-        to the specific algorithm the current classifier is using.
-        Use keyword arguments to store parameters
-        specific to the algorithm being used. E.g. if you were
-        making a neural net with 30 input nodes, hidden layer with
-        10 units, and 3 output nodes your initalization might look
-        something like this:
 
-        neural_net = Classifier(weights = [], num_input=30, num_hidden=10, num_output=3)
-
-        Here I have the weight matrices being stored in a list called weights (initially empty).
         """
         self.classifier_type = classifier_type
         self.params = kwargs
-        """
-        The kwargs you inputted just becomes a dictionary, so we can save
-        that dictionary to be used in other methods.
-        """
+
         self.clf = None
+        self.file = open('result/trial_' + str(datetime.datetime.today()).replace("/", "_",-1) + ".txt", 'w', 0)
 
-    def train(self, training_data):
+    def train(self, training_data, testData):
         """
-        Data should be nx(m+1) numpy matrix where n is the
-        number of examples and m is the number of features
-        (recall that the first element of the vector is the label).
 
-        I recommend implementing the specific algorithms in a
-        seperate module and then determining which method to call
-        based on classifier_type. E.g. if you had a module called
-        neural_nets:
-
-        if self.classifier_type == 'neural_net':
-            import neural_nets
-            neural_nets.train_neural_net(self.params, training_data)
-
-        Note that your training algorithms should be modifying the parameters
-        so make sure that your methods are actually modifying self.params
-
-        You should print the accuracy, precision, and recall on the training data.
         """
-        from NeuralNetwork import NeuralNetwork
         # find the numbers for feature and label
         featureNum = training_data.shape[1] - 1
-        # labelNum = len(np.unique(training_data[:, :1]))
-        labelNum = 10
+        labelNum = len(np.unique(training_data[:, :1]))
 
         # get the number of nodes for each layer
         if "hidden_layer" in self.params and self.params["hidden_layer"] is not None:
@@ -74,31 +42,58 @@ class Classifier:
             momentumFactor = 0.0
 
         self.clf = NeuralNetwork(training_data, nodeNum, weightInitMode, momentumFactor)
-        self.clf.train()
-        self.test(training_data, "training")
+        iteration = 5
+        totalIter = iteration
+        while iteration > 0:
+            self.clf.train(iteration)
+            print "---------- Settings ----------"
+            print "Examples                 :", training_data.shape[0]
+            print "Alpha                    :", self.clf.getAlpha()
+            print "Momentum factor          :", momentumFactor
+            print "# of Nodes in all layers :", nodeNum
+            print "Training iteration so far:", totalIter
+            self.file.write("\n")
+            self.file.write("---------- Settings ----------" + "\n")
+            self.file.write("Examples                 : " + str(training_data.shape[0]) + "\n")
+            self.file.write("Alpha                    : " + str(self.clf.getAlpha()) + "\n")
+            self.file.write("Momentum factor          : " + str(momentumFactor) + "\n")
+            self.file.write("# of Nodes in all layers : " + str(nodeNum) + "\n")
+            self.file.write("Training iteration so far: " + str(totalIter) + "\n")
+            self.test(training_data, "training")
+            self.test(testData, "testing")
+            print ""
+            restart = raw_input("Do you want to restart? (Y/N)")
+            if restart.upper() == "Y":
+                totalIter = 0
+                print "Current Alpha is", self.clf.getAlpha()
+                alpha = raw_input("What alpha ?")
+                self.clf.setAlpha(float(alpha))
+                self.clf.initTheta()
+                self.file.write("\n")
+                self.file.write("*****************************************************\n")
+                self.file.write("Re-initialize trail with alpha = " + str(alpha) + "\n")
+                self.file.write("*****************************************************\n")
 
+            print ""
+            iteration = raw_input("How many iteration do you want to train the model?")
+            try:
+                iteration = int(iteration)
+                totalIter += iteration
+            except:
+                iteration = raw_input("Please input an integer")
+                iteration = 1
+                totalIter += 1
+        print "Total training iterations:", totalIter
 
     def predict(self, data):
         """
-        Predict class of a single data vector
-        Data should be 1x(m+1) numpy matrix where m is the number of features
-        (recall that the first element of the vector is the label).
 
-        I recommend implementing the specific algorithms in a
-        seperate module and then determining which method to call
-        based on classifier_type.
-
-        This method should return the predicted label.
         """
         return self.clf.predict(data)
 
     def test(self, test_data, mode):
         """
-        Data should be nx(m+1) numpy matrix where n is the
-        number of examples and m is the number of features
-        (recall that the first element of the vector is the label).
 
-        You should print the accuracy, precision, and recall on the test data.
         """
         correct = 0
         countPrediction = {}
@@ -130,21 +125,17 @@ class Classifier:
                 countPrediction[pred_label] += 1
             else:
                 countPrediction[pred_label] = 1
-
-        print "count correct", countCorrect
-        print "all predictions", allPrediction
+        print "---------- Result ----------"
+        print "Alpha is", self.clf.getAlpha()
+        print "Count correct", countCorrect
+        print "All predictions", allPrediction
         accuracy = float(correct) / len(test_data)
         print "The accuracy for", mode, "is", accuracy
-
-
-
-        # for key in countPrediction.keys():
-        #     if countPrediction[key] == 0:
-        #         print "precision for key:", key, " = ", 0.0
-        #     else:
-        #         print "precision for key:", key, " = ", countCorrect[key] / float(countPrediction[key])
-        #     print "recall for key:", key, "    = ", countCorrect[key] / float(countTotal[key])
-        # print
+        self.file.write("---------- Result ----------" + "\n")
+        self.file.write("Alpha is " + str(self.clf.getAlpha()) + "\n")
+        self.file.write("Count correct " + str(countCorrect) + "\n")
+        self.file.write("All predictions " + str(allPrediction) + "\n")
+        self.file.write("The accuracy for " + mode + " is " + str(accuracy) + "\n")
 
     def getAttrValue(self, ex):
         """

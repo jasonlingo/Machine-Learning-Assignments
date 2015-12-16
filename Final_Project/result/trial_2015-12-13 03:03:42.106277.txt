@@ -1,0 +1,76 @@
+
+---------- Settings ----------
+Examples                 : 50
+Alpha                    : 2e-05
+Momentum factor          : 0.8
+# of Nodes in all layers : [784, 392, 10]
+Training iteration so far: 5
+---------- Result ----------
+Alpha is 2e-05
+Count correct {0.0: 5, 1.0: 0, 2.0: 0, 3.0: 0, 4.0: 0, 5.0: 0, 6.0: 0, 7.0: 0, 8.0: 0, 9.0: 0}
+All predictions {0.0: 50, 1.0: 0, 2.0: 0, 3.0: 0, 4.0: 0, 5.0: 0, 6.0: 0, 7.0: 0, 8.0: 0, 9.0: 0}
+The accuracy for training is 0.1
+---------- Result ----------
+Alpha is 2e-05
+Count correct {0.0: 1, 1.0: 0, 2.0: 0, 3.0: 0, 5.0: 0, 7.0: 0, 9.0: 0}
+All predictions {0.0: 10, 1.0: 0, 2.0: 0, 3.0: 0, 5.0: 0, 7.0: 0, 9.0: 0}
+The accuracy for testing is 0.1
+
+---------- Settings ----------
+Examples                 : 50
+Alpha                    : 2e-05
+Momentum factor          : 0.8
+# of Nodes in all layers : [784, 392, 10]
+Training iteration so far: 10
+---------- Result ----------
+Alpha is 2e-05
+Count correct {0.0: 5, 1.0: 0, 2.0: 0, 3.0: 0, 4.0: 0, 5.0: 0, 6.0: 0, 7.0: 0, 8.0: 0, 9.0: 0}
+All predictions {0.0: 50, 1.0: 0, 2.0: 0, 3.0: 0, 4.0: 0, 5.0: 0, 6.0: 0, 7.0: 0, 8.0: 0, 9.0: 0}
+The accuracy for training is 0.1
+---------- Result ----------
+Alpha is 2e-05
+Count correct {0.0: 1, 1.0: 0, 2.0: 0, 3.0: 0, 5.0: 0, 7.0: 0, 9.0: 0}
+All predictions {0.0: 10, 1.0: 0, 2.0: 0, 3.0: 0, 5.0: 0, 7.0: 0, 9.0: 0}
+The accuracy for testing is 0.1
+
+*****************************************************
+Re-initialize trail with alpha = 0.0001
+*****************************************************
+
+---------- Settings ----------
+Examples                 : 50
+Alpha                    : 0.0001
+Momentum factor          : 0.8
+# of Nodes in all layers : [784, 392, 10]
+Training iteration so far: 5
+---------- Result ----------
+Alpha is 0.0001
+Count correct {0.0: 0, 1.0: 0, 2.0: 0, 3.0: 0, 4.0: 0, 5.0: 0, 6.0: 0, 7.0: 5, 8.0: 0, 9.0: 0}
+All predictions {0.0: 0, 1.0: 0, 2.0: 0, 3.0: 0, 4.0: 0, 5.0: 0, 6.0: 0, 7.0: 50, 8.0: 0, 9.0: 0}
+The accuracy for training is 0.1
+---------- Result ----------
+Alpha is 0.0001
+Count correct {0.0: 0, 1.0: 0, 2.0: 0, 3.0: 0, 5.0: 0, 7.0: 1, 9.0: 0}
+All predictions {0.0: 1, 1.0: 0, 2.0: 0, 3.0: 0, 5.0: 0, 7.0: 9, 9.0: 0}
+The accuracy for testing is 0.1
+
+*****************************************************
+Re-initialize trail with alpha = 0.1
+*****************************************************
+
+---------- Settings ----------
+Examples                 : 50
+Alpha                    : 0.1
+Momentum factor          : 0.8
+# of Nodes in all layers : [784, 392, 10]
+Training iteration so far: 100
+---------- Result ----------
+Alpha is 0.1
+Count correct {0.0: 5, 1.0: 0, 2.0: 0, 3.0: 0, 4.0: 0, 5.0: 0, 6.0: 0, 7.0: 0, 8.0: 0, 9.0: 0}
+All predictions {0.0: 50, 1.0: 0, 2.0: 0, 3.0: 0, 4.0: 0, 5.0: 0, 6.0: 0, 7.0: 0, 8.0: 0, 9.0: 0}
+The accuracy for training is 0.1
+---------- Result ----------
+Alpha is 0.1
+Count correct {0.0: 1, 1.0: 0, 2.0: 0, 3.0: 0, 5.0: 0, 7.0: 0, 9.0: 0}
+All predictions {0.0: 10, 1.0: 0, 2.0: 0, 3.0: 0, 5.0: 0, 7.0: 0, 9.0: 0}
+The accuracy for testing is 0.1

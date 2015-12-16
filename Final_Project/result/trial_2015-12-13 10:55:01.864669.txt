@@ -1,0 +1,50 @@
+
+---------- Settings ----------
+Examples                 : 30000
+Alpha                    : 2e-05
+Momentum factor          : 0.8
+# of Nodes in all layers : [784, 1000, 10]
+Training iteration so far: 5
+---------- Result ----------
+Alpha is 2e-05
+Count correct {0.0: 0, 1.0: 0, 2.0: 0, 3.0: 0, 4.0: 0, 5.0: 0, 6.0: 0, 7.0: 3133, 8.0: 0, 9.0: 0}
+All predictions {0.0: 0, 1.0: 0, 2.0: 0, 3.0: 0, 4.0: 0, 5.0: 0, 6.0: 0, 7.0: 30000, 8.0: 0, 9.0: 0}
+The accuracy for training is 0.104433333333
+---------- Result ----------
+Alpha is 2e-05
+Count correct {0.0: 0, 1.0: 0, 2.0: 0, 3.0: 0, 4.0: 0, 5.0: 0, 6.0: 0, 7.0: 1066, 8.0: 0, 9.0: 0}
+All predictions {0.0: 0, 1.0: 0, 2.0: 0, 3.0: 0, 4.0: 0, 5.0: 0, 6.0: 0, 7.0: 10000, 8.0: 0, 9.0: 0}
+The accuracy for testing is 0.1066
+
+*****************************************************
+Re-initialize trail with alpha = 0.0001
+*****************************************************
+
+---------- Settings ----------
+Examples                 : 30000
+Alpha                    : 0.0001
+Momentum factor          : 0.8
+# of Nodes in all layers : [784, 1000, 10]
+Training iteration so far: 10
+---------- Result ----------
+Alpha is 0.0001
+Count correct {0.0: 0, 1.0: 0, 2.0: 2897, 3.0: 0, 4.0: 0, 5.0: 0, 6.0: 0, 7.0: 0, 8.0: 53, 9.0: 0}
+All predictions {0.0: 0, 1.0: 0, 2.0: 25943, 3.0: 0, 4.0: 0, 5.0: 0, 6.0: 0, 7.0: 0, 8.0: 4057, 9.0: 0}
+The accuracy for training is 0.0983333333333
+---------- Result ----------
+Alpha is 0.0001
+Count correct {0.0: 0, 1.0: 0, 2.0: 929, 3.0: 0, 4.0: 0, 5.0: 0, 6.0: 0, 7.0: 0, 8.0: 23, 9.0: 0}
+All predictions {0.0: 0, 1.0: 0, 2.0: 8612, 3.0: 0, 4.0: 0, 5.0: 0, 6.0: 0, 7.0: 0, 8.0: 1388, 9.0: 0}
+The accuracy for testing is 0.0952
+
+---------- Settings ----------
+Examples                 : 30000
+Alpha                    : 0.0001
+Momentum factor          : 0.8
+# of Nodes in all layers : [784, 1000, 10]
+Training iteration so far: 1000
+---------- Result ----------
+Alpha is 0.0001
+Count correct {0.0: 358, 1.0: 2706, 2.0: 246, 3.0: 2040, 4.0: 0, 5.0: 0, 6.0: 25, 7.0: 5, 8.0: 0, 9.0: 0}
+All predictions {0.0: 426, 1.0: 8981, 2.0: 314, 3.0: 20064, 4.0: 0, 5.0: 0, 6.0: 124, 7.0: 72, 8.0: 0, 9.0: 19}
+The accuracy for training is 0.179333333333

@@ -1,0 +1,110 @@
+\documentclass[11pt]{article}
+
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{url}
+\usepackage{wrapfig}
+\usepackage{color}
+\usepackage{marvosym}
+\usepackage{enumerate}
+\usepackage{subfigure}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref} 
+
+
+\oddsidemargin 0mm
+\evensidemargin 5mm
+\topmargin -20mm
+\textheight 240mm
+\textwidth 160mm
+
+
+
+
+\newcommand{\vw}{{\bf w}}
+\newcommand{\vx}{{\bf x}}
+\newcommand{\vy}{{\bf y}}
+\newcommand{\vxi}{{\bf x}_i}
+\newcommand{\yi}{y_i}
+\newcommand{\vxj}{{\bf x}_j}
+\newcommand{\vxn}{{\bf x}_n}
+\newcommand{\yj}{y_j}
+\newcommand{\ai}{\alpha_i}
+\newcommand{\aj}{\alpha_j}
+\newcommand{\X}{{\bf X}}
+\newcommand{\Y}{{\bf Y}}
+\newcommand{\vz}{{\bf z}}
+\newcommand{\msigma}{{\bf \Sigma}}
+\newcommand{\vmu}{{\bf \mu}}
+\newcommand{\vmuk}{{\bf \mu}_k}
+\newcommand{\msigmak}{{\bf \Sigma}_k}
+\newcommand{\vmuj}{{\bf \mu}_j}
+\newcommand{\msigmaj}{{\bf \Sigma}_j}
+\newcommand{\pij}{\pi_j}
+\newcommand{\pik}{\pi_k}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\el}{\mathcal{L}}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\vxij}{{\bf x}_{ij}}
+\newcommand{\vt}{{\bf t}}
+\newcommand{\yh}{\hat{y}}
+\newcommand{\code}[1]{{\footnotesize \tt #1}}
+\newcommand{\alphai}{\alpha_i}
+
+
+
+\pagestyle{myheadings}
+\markboth{Homework 5}{Fall 2015 CS 475 Machine Learning: Homework 5}
+
+
+\title{CS 475 Machine Learning: Homework 5\\Graphical Models\\
+\Large{Due: Tuesday November 24, 2015, 11:59pm}\\
+100 Points Total \hspace{1cm} Version 1.0}
+\author{Chenyang Su}
+\date{}
+
+\begin{document}
+\large
+\maketitle
+\thispagestyle{headings}
+
+\vspace{-.5in}
+
+
+3.1 Neural Network:
+
+A neural network consists of several layers, where the first layer is the input layer, the last layer is the output layer and all the other layers are called hidden layers. Each layer has several nodes and there are edges connecting nodes in neighboring layers. 
+
+(notation follows https://www.youtube.com/watch?v=Ih5Mr93E-2c)
+In a neural network, the $l-th$ layer contains $d^{(l)}+1$ nodes $x_0^{(l)},x_1^{(l)},x_2^{(l)},...,x_{d^{(l)}}^{(l)}$, where $x_0^{(l)}$ is always the bias term constant 1. $x_j^{(l)}$ is calculated by passing the linear combination of all $x_i^{(l-1)}$ to a nonlinear activation function $\theta$, which in our problem is the sigmoid function $\theta(z)=\frac{1}{1+e^{-z}}$. Mathematically,
+$$x_j^{(l)}=\theta(s_j^{(l)})=\theta\left(\sum_{i=0}^{d^{(l-1)}}w_{ij}^{(l)}x_i^{(l-1)}\right)$$,
+where $s_j^{(l)}=\sum_{i=0}^{d^{(l-1)}}w_{ij}^{(l)}x_i^{(l-1)}$ is called the signal. Starting from the input layer, we apply the above formula to get all the nodes in the first hidden layer. Then repeating the process to each hidden layer one by one, we get all the hidden nodes and finally get the nodes in output layer. Output layer contains nodes corresponding to labels (in handwritten digits problem we have 10 labels). We will predict the label with the largest output value. The above procedure is the feed forward step in neural network. 
+
+Therefore the accuracy of prediction depends on $w_{ij}^{(l)}$, which are the parameters we need to learn. In neural network, the learning step is done by back propagation. We first denote $\{w_{ij}^{(l)}\}$ by $w$ and the cost by $e(w)$. According to stochastic gradient descent (SGD), we shall update $w_{ij}^{(l)}\gets w_{ij}^{(l)}-\eta\frac{\partial e(w)}{\partial w_{ij}^{(l)}}$. Applying chain rule, we have
+$$\frac{\partial e(w)}{\partial w_{ij}^{(l)}}=\frac{\partial e(w)}{\partial s_j^{(l)}}\frac{\partial s_j^{(l)}}{\partial w_{ij}^{(l)}}.$$
+Here it is easy to see that $\frac{\partial s_j^{(l)}}{\partial w_{ij}^{(l)}}=x_i^{(l-1)}$ and we denote $\frac{\partial e(w)}{\partial s_j^{(l)}}$ by $\delta_j^{(l)}$. $x_i^{(l-1)}$ is already calculated by feed forward. We just need to calculate $\delta_j^{(l)}$ by back propagation. We shall first give the cost function used in our problem. In the final layer $L$, which is the output layer, we have 10 nodes $x_0^{(L)},x_1^{(L)},...,x_{9}^{(L)}$. And we transform the label into a vector $(y_0,y_1,...,y_{9})$, where $y_i$ equals 1 if the label is $i$ and 0 otherwise. Then our cost function is defined as 
+$$e(w)=\frac{1}{2}\sum_{i=0}^{9}(x_i^{(L)}-y_i)^2.$$
+
+Since $x_i^{(L)}=\theta(s_i^{(L)})$, $\delta_{i}^{(L)}=\frac{\partial e(w)}{\partial s_i^{(L)}}=(\theta(s_i^{(L)})-y_i)\theta'(s_i^{(L)})$. We shall note $\theta(z)=\frac{1}{1+e^{-z}}$. Therefore $\theta'(z)=(1-\theta(z))\theta(z)$. Then $\delta_{i}^{(L)}=(x_i^{(L)}-y_i)(1-x_i^{(L)})x_i^{(L)}$. Above all we can compute $\delta$ for the final layer. To compute $\delta$ for other layers, we can apply chain rule,
+\begin{align*}
+\delta_i^{(l-1)}&=\frac{\partial e(w)}{\partial s_i^{(l-1)}}\\
+&=\sum_{j=1}^{d^{(l)}}\frac{\partial e(w)}{\partial s_j^{(l)}}\frac{\partial s_j^{(l)}}{\partial x_i^{(l-1)}}\frac{\partial x_i^{(l-1)}}{\partial s_i^{(l-1)}}\\
+&=\sum_{j=1}^{d^{(l)}}\delta_j^{(l)}w_{ij}^{(l)}\theta'(s_i^{(l-1)})\\
+&=\sum_{j=1}^{d^{(l)}}\delta_j^{(l)}w_{ij}^{(l)}(1-\theta(s_i^{(l-1)}))\theta(s_i^{(l-1)})\\
+&=(1-x_i^{(l-1)})x_i^{(l-1)}\sum_{j=1}^{d^{(l)}}\delta_j^{(l)}w_{ij}^{(l)}
+\end{align*}  
+The formula above shows how we get $\delta$ in one layer from the layer after, which is the back propagation algorithm. 
+
+3.2 Support vector machine (SVM):
+
+The method of SVM classifies data by drawing a hyperplane in space. Points in one side is classified as 0 and in another side is classified as 1. Therefore it is a linear classifier. 
+
+However, SVM with kernel method can work well with data which are not linearly separable. Kernel method can transform the feature and produce nonlinear decision boundary.    
+
+ 
+
+\end{document}
+
+
