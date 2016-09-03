@@ -1,1 +1,1 @@
-For running the programs, please use the "script.txt" or "script.sh" in each assignment.
+Course Page: http://www.cs475.org/fall2015/
